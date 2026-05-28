@@ -1,0 +1,992 @@
+﻿@model IEnumerable<VKITActivityManager.Models.HoatDong>
+@{
+    ViewData["Title"] = "Trang chủ - VKIT";
+    var banners = Model.Where(x => x.PhanLoai == 3).OrderByDescending(x => x.NgayTao).ToList();
+    var videos = Model.Where(x => x.PhanLoai == 2 && !string.IsNullOrEmpty(x.DuongDanVideo)).OrderByDescending(x => x.NgayTao).ToList();
+
+    // TÁCH RÕ RÀNG DANH SÁCH DỰA VÀO MÃ PHÂN LOẠI
+    var tinTucs = Model.Where(x => x.PhanLoai == 1).OrderByDescending(x => x.NgayTao).ToList();
+    var hocBongs = Model.Where(x => x.PhanLoai == 4).OrderByDescending(x => x.NgayTao).ToList();
+    var camNhans = Model.Where(x => x.PhanLoai == 5).OrderByDescending(x => x.NgayTao).ToList();
+    var baoChis = Model.Where(x => x.PhanLoai == 6).OrderByDescending(x => x.NgayTao).ToList();
+}
+
+<style>
+    /* BANNER CSS */
+    .vlu-hero-carousel {
+        width: 100vw;
+        position: relative;
+        left: 50%;
+        right: 50%;
+        margin-left: -50vw;
+        margin-right: -50vw;
+        background-color: #000;
+    }
+
+    .vlu-banner-img {
+        width: 100%;
+        height: calc(100vh - 110px);
+        min-height: 400px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .carousel-indicators [data-bs-target] {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin: 0 6px;
+    }
+
+    .carousel-indicators .active {
+        background-color: #c62828;
+        transform: scale(1.2);
+    }
+
+    /* CẢM NHẬN SINH VIÊN */
+    .testimonial-section {
+        background-color: #f8f9fa;
+        border-radius: 30px;
+        padding: 60px 30px;
+        margin-top: 60px;
+        margin-bottom: 50px;
+    }
+
+    .testimonial-title {
+        color: #c62828;
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 50px;
+    }
+
+    .testimonial-img-wrapper {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        border: 4px solid #800000;
+        padding: 5px;
+        background: white;
+        flex-shrink: 0;
+        margin-right: 25px;
+        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+
+    .testimonial-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .testimonial-name {
+        color: #d35400;
+        font-size: 1.4rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+
+        .testimonial-name p, .testimonial-role p {
+            display: inline;
+            margin: 0;
+            padding: 0;
+        }
+
+    .testimonial-role {
+        color: #666;
+        font-style: italic;
+        font-size: 0.95rem;
+        margin-bottom: 15px;
+    }
+
+    .testimonial-content {
+        color: #333;
+        font-size: 1rem;
+        line-height: 1.7;
+        text-align: justify;
+    }
+
+    .testimonial-nav-btn {
+        background-color: #e65100;
+        border: none;
+        color: white;
+        border-radius: 50%;
+        width: 45px;
+        height: 45px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s;
+    }
+
+        .testimonial-nav-btn:hover {
+            background-color: #c62828;
+        }
+
+    /* BÁO CHÍ */
+    .press-section {
+        background-color: #f8f9fa;
+        border-radius: 30px;
+        padding: 60px 20px;
+        margin: 50px 0;
+    }
+
+    .press-title {
+        color: #c62828;
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        margin-bottom: 50px;
+    }
+
+    .press-card {
+        background: #fff;
+        border-radius: 15px;
+        overflow: hidden;
+        transition: 0.3s;
+        border: 1px solid #eee;
+        height: 100%;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        display: flex;
+        flex-direction: column;
+    }
+
+        .press-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            border-color: #c62828;
+        }
+
+    .press-img-container {
+        height: 500px;
+        width: 100%;
+        overflow: hidden;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .press-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+        image-rendering: high-quality;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .press-name {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: #333;
+        padding: 25px 15px;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .press-control {
+        width: 55px;
+        height: 55px;
+        background: #555;
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.9;
+    }
+
+        .press-control:hover {
+            background: #c62828;
+            opacity: 1;
+        }
+
+    /* VIDEO CSS */
+    .video-main-container {
+        background-color: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.05);
+        padding: 30px;
+    }
+
+    .video-player-wrapper {
+        border-radius: 20px;
+        overflow: hidden;
+        background-color: #000;
+        position: relative;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+    .youtube-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #000;
+    }
+
+        .youtube-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+    .video-content-scroll {
+        max-height: 220px;
+        overflow-y: auto;
+        padding-right: 8px;
+    }
+
+    /* TIN TỨC, HỌC BỔNG, ƯU ĐIỂM, ĐÀO TẠO, HỌC PHÍ... */
+    .news-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .news-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+        }
+
+    .training-section {
+        background-color: #f8f9fa;
+        border-radius: 20px;
+        padding: 50px 30px;
+    }
+
+    .training-title {
+        color: #1a237e;
+        font-size: 2.2rem;
+        line-height: 1.3;
+    }
+
+    .category-title {
+        font-size: 1.15rem;
+        color: #222;
+    }
+
+    .faculty-list {
+        margin-top: 10px;
+        padding-left: 35px;
+    }
+
+        .faculty-list li {
+            margin-bottom: 8px;
+        }
+
+        .faculty-list a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
+        }
+
+            .faculty-list a:hover {
+                color: #c62828;
+                text-decoration: underline;
+            }
+    /* CSS TÙY CHỈNH CHO TAB HỌC PHÍ TRÔNG HIỆN ĐẠI HƠN */
+    .tuition-tabs-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+
+    .tuition-tabs {
+        background-color: #f1f3f5;
+        border-radius: 50px;
+        padding: 5px;
+        display: inline-flex;
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+        .tuition-tabs .nav-link {
+            border-radius: 50px;
+            color: #555;
+            font-weight: 600;
+            padding: 10px 35px;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+        }
+
+            .tuition-tabs .nav-link:hover {
+                color: #c62828;
+            }
+
+            .tuition-tabs .nav-link.active {
+                background-color: #c62828;
+                color: #fff;
+                box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);
+                transform: translateY(-2px);
+            }
+
+    .tuition-wrapper {
+        border: 2px solid #c62828;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        background: #fff;
+    }
+    .advantage-card {
+        background-color: #ffffff;
+        border-radius: 16px;
+        padding: 25px 20px;
+        height: 100%;
+        transition: all 0.3s ease;
+        border: 1px solid #f0f0f0;
+        border-bottom: 4px solid transparent;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    }
+
+        .advantage-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+            border-bottom: 4px solid #c62828;
+        }
+
+    .advantage-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: rgba(198, 40, 40, 0.08);
+        color: #c62828;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 18px;
+        transition: all 0.3s ease;
+    }
+
+    .advantage-card:hover .advantage-icon {
+        background-color: #c62828;
+        color: #ffffff;
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .advantage-title {
+        color: #1a237e;
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-bottom: 12px;
+        line-height: 1.4;
+    }
+
+    .advantage-text {
+        color: #555;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        text-align: justify;
+        margin: 0;
+    }
+
+    .tuition-section {
+        margin: 60px 0;
+    }
+
+    .tuition-title {
+        color: #c62828;
+        font-size: 1.8rem;
+        line-height: 1.4;
+    }
+
+    .tuition-wrapper {
+        border: 2px solid #c62828;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+
+    .tuition-table {
+        margin-bottom: 0;
+        background-color: #fff;
+    }
+
+        .tuition-table thead {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        .tuition-table th, .tuition-table td {
+            padding: 16px;
+            border: 1px solid #ffcdd2;
+            vertical-align: middle;
+        }
+
+    .bg-light-red {
+        background-color: #fff8f8;
+    }
+
+    .text-blue {
+        color: #1976d2;
+    }
+
+    .text-red {
+        color: #c62828;
+    }
+
+    .text-dark-blue {
+        color: #1a237e;
+    }
+
+    .advantages-section {
+        background: linear-gradient(to bottom, #f8fbff, #ffffff);
+    }
+
+    .section-badge {
+        display: inline-block;
+        background: #e8f0ff;
+        color: #0d47a1;
+        padding: 8px 18px;
+        border-radius: 50px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: .5px;
+    }
+
+    .section-title {
+        font-size: 42px;
+        font-weight: 800;
+        color: #1a237e;
+    }
+
+    .section-subtitle {
+        max-width: 750px;
+        margin: auto;
+        color: #6c757d;
+        font-size: 17px;
+        line-height: 1.7;
+    }
+
+    .advantage-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 35px 25px;
+        text-align: center;
+        transition: all .35s ease;
+        border: 1px solid #eef2f7;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0,0,0,.05);
+    }
+
+        .advantage-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg,#0d47a1,#c62828);
+        }
+
+        .advantage-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 45px rgba(0,0,0,.12);
+        }
+
+    .advantage-icon {
+        width: 90px;
+        height: 90px;
+        margin: auto auto 25px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        color: #fff;
+        background: linear-gradient(135deg,#0d47a1,#1565c0);
+        box-shadow: 0 10px 25px rgba(13,71,161,.25);
+    }
+
+    .advantage-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a237e;
+        margin-bottom: 15px;
+        min-height: 52px;
+    }
+
+    .advantage-text {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.8;
+        margin: 0;
+    }
+    /* MOBILE */ 
+  
+
+    {
+        .section-title
+
+    {
+        font-size: 30px;
+    }
+
+    .section-subtitle {
+        font-size: 15px;
+    }
+
+    .advantage-card {
+        padding: 28px 20px;
+    }
+
+    .advantage-icon {
+        width: 75px;
+        height: 75px;
+        font-size: 28px;
+    }
+
+    }
+</style>
+
+<div id="vluHeroCarousel" class="carousel slide vlu-hero-carousel" data-bs-ride="carousel" data-bs-interval="2000" data-bs-pause="false">
+    <div class="carousel-indicators mb-4">
+        @for (int i = 0; i < banners.Count; i++)
+        {
+            <button type="button" data-bs-target="#vluHeroCarousel" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"></button>
+        }
+    </div>
+    <div class="carousel-inner">
+        @if (banners.Any())
+        {
+            for (int i = 0; i < banners.Count; i++)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")"><img src="@banners[i].DuongDanAnh" class="vlu-banner-img" alt="Banner VKIT"></div>
+            }
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#vluHeroCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+    <button class="carousel-control-next" type="button" data-bs-target="#vluHeroCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+</div>
+
+<div class="container my-5 pt-2">
+
+    @if (videos.Count > 0)
+    {
+        <div class="row align-items-center video-main-container mb-5 mx-0">
+            <div class="col-lg-7 p-0"><div class="video-player-wrapper"><div class="youtube-container"><div id="youtubePlayerAPI"></div></div></div></div>
+            <div class="col-lg-5 ps-lg-5 pt-4 pt-lg-0">
+                <h6 id="currentVideoSubTitle" class="text-danger fw-bold text-uppercase mb-2">@Html.Raw(videos[0].TieuDe2 ?? videos[0].MoTaNgan)</h6>
+                <h3 id="currentVideoTitle" class="fw-bold mb-3" style="color: #1a237e;">@Html.Raw(videos[0].TieuDe)</h3>
+                <div id="currentVideoContent" class="text-muted fs-6 video-content-scroll">@Html.Raw(videos[0].NoiDung)</div>
+            </div>
+        </div>
+    }
+    <!-- ===================== ƯU ĐIỂM CHƯƠNG TRÌNH ===================== --> 
+    <section class="advantages-section py-5"> <div class="container"> 
+        <!-- TITLE --> <div class="text-center mb-5"> <span class="section-badge">
+            <i class="fas fa-star"></i> VKIT ADVANTAGES </span> <h2 class="section-title mt-3"> Ưu Điểm Chương Trình </h2>
+            <p class="section-subtitle"> Chương trình đào tạo chuẩn quốc tế, gắn liền doanh nghiệp và cơ hội phát triển toàn diện cho sinh viên. </p> 
+            </div> <!-- CARDS -->
+            <div class="row g-4"> <!-- ITEM -->
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="advantage-card h-100"> <div class="advantage-icon"> 
+                        <i class="fas fa-users"></i> </div> 
+                        <h4 class="advantage-title"> Mô hình chuẩn Hàn Quốc </h4> <p class="advantage-text"> Mô hình đào tạo theo tiêu chuẩn các trường đại học Hàn Quốc, quy mô lớp nhỏ (20-30), tăng cường tương tác. </p>
+                    </div>
+                </div> <!-- ITEM --> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-building"></i> </div> <h4 class="advantage-title"> Trải nghiệm doanh nghiệp </h4>
+                        <p class="advantage-text"> Sinh viên được trải nghiệm doanh nghiệp từ năm 1, có cơ hội việc làm từ năm 2. </p>
+                    </div>
+                </div> <!-- ITEM --> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-plane-departure"></i> </div>
+                        <h4 class="advantage-title"> Chuyển tiếp du học </h4> <p class="advantage-text"> Được lựa chọn chuyển tiếp để lấy bằng Đại học Hàn Quốc sau 2 năm học tại HUTECH. </p>
+                    </div>
+                </div> <!-- ITEM --> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-globe-asia"></i> </div>
+                        <h4 class="advantage-title"> Giảng viên quốc tế </h4> <p class="advantage-text"> Giảng viên tốt nghiệp từ các trường đại học Hàn Quốc, các trường đẳng cấp quốc tế. </p>
+                    </div>
+                </div> <!-- ITEM --> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-wallet"></i> </div>
+                        <h4 class="advantage-title"> Thực tập thu nhập cao </h4> <p class="advantage-text"> Thực tập, làm việc trong các doanh nghiệp tại Hàn Quốc hoặc Việt Nam với mức thu nhập xứng đáng. </p>
+                    </div>
+                </div> <!-- ITEM --> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-language"></i> </div>
+
+                        <h4 class="advantage-title"> Ngoại khóa miễn phí </h4> <p class="advantage-text"> Ngoài lịch học chính khóa, sinh viên có thể tham gia các lớp học phụ đạo tiếng Hàn và văn hóa Hàn Quốc ngoài giờ miễn phí. </p>
+                    </div>
+                </div> <!-- ITEM --> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-graduation-cap"></i> </div> <h4 class="advantage-title"> Nhận bằng đại học Hàn </h4>
+
+                        <p class="advantage-text"> Được lựa chọn chuyển tiếp để lấy bằng Đại Học Hàn Quốc sau 2 năm học tại HUTECH.</p>
+                    </div>
+                </div> <!-- ITEM --> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-book-reader"></i> </div> <h4 class="advantage-title"> Dễ dàng tiếp thu kiến thức </h4> <p class="advantage-text"> Sinh viên vẫn học các môn chuyên ngành bằng tiếng Việt để dễ dàng tiếp thu kiến thức. </p> </div> </div>
+            </div>
+        </div>
+    </section>
+    @{
+        // PHÂN LOẠI CỰC KỲ CHÍNH XÁC DỰA VÀO CỘT HeDaoTao TỪ BẢNG HỌC PHÍ
+        var allHocPhi = ViewBag.DanhSachHocPhi as List<VKITActivityManager.Models.HocPhi> ?? new List<VKITActivityManager.Models.HocPhi>();
+
+        // Hệ Cử Nhân (Tất cả những dữ liệu không mang mã KS, hoặc bị rỗng đều tính là Cử nhân)
+        var listCuNhan = allHocPhi.Where(x => x.HeDaoTao != "KS").ToList();
+
+        // Hệ Kỹ Sư (Chỉ những dữ liệu được Admin gán đúng mã KS)
+        var listKySu = allHocPhi.Where(x => x.HeDaoTao == "KS").ToList();
+    }
+
+    <div class="tuition-section">
+        <h2 class="fw-bold text-center tuition-title mb-4">
+            HỌC PHÍ THAM KHẢO NĂM 2025 VÀ<br />ĐƯỢC TÍNH THEO CHƯƠNG TRÌNH ĐÀO TẠO CHUẨN
+        </h2>
+
+        <div class="tuition-tabs-container">
+            <ul class="nav nav-pills tuition-tabs" id="tuitionTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="cunhan-tab" data-bs-toggle="tab" data-bs-target="#cunhan" type="button" role="tab">
+                        <i class="fas fa-user-graduate me-2"></i> Hệ Cử Nhân
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="kysu-tab" data-bs-toggle="tab" data-bs-target="#kysu" type="button" role="tab">
+                        <i class="fas fa-microchip me-2"></i> Hệ Kỹ Sư
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div class="tab-content" id="tuitionTabContent">
+
+            <div class="tab-pane fade show active" id="cunhan" role="tabpanel">
+                <div class="tuition-wrapper animate__animated animate__fadeIn">
+                    <div class="table-responsive">
+                        <table class="table table-bordered tuition-table text-center mb-0" style="min-width: 800px;">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Ngành đào tạo</th>
+                                    <th width="15%">Đơn vị áp dụng</th>
+                                    <th width="20%">Học phí<br />(VNĐ)</th>
+                                    <th width="22%">Học phí sau học bổng 25%<br />(VNĐ)</th>
+                                    <th width="23%">Học phí sau học bổng 50%<br />(VNĐ)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center align-middle">
+                                @if (listCuNhan.Any())
+                                {
+                                    var groups = listCuNhan.GroupBy(x => new { x.NganhDaoTao, x.ThoiGian }).ToList();
+                                    foreach (var group in groups)
+                                    {
+                                        var items = group.ToList();
+                                        for (int i = 0; i < items.Count; i++)
+                                        {
+                                            <tr class="@(items[i].LaDongPhu ? "bg-light-red" : "")">
+                                                @if (i == 0)
+                                                {
+                                                    <td rowspan="@items.Count" class="text-dark-blue fw-bold text-start ps-3">
+                                                        @group.Key.NganhDaoTao<br />
+                                                        <span class="small text-muted fw-normal">(@group.Key.ThoiGian)</span>
+                                                    </td>
+                                                }
+                                                <td class="text-dark-blue fw-bold">@items[i].DonViApDung</td>
+                                                <td class="text-blue fw-bold">@items[i].MucHocPhi</td>
+                                                <td class="text-red fw-bold">@items[i].HocPhiGiam25</td>
+                                                <td class="text-red fw-bold">@items[i].HocPhiGiam50</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="5" class="py-4 text-muted fst-italic">Chưa có thông tin học phí hệ Cử nhân.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="kysu" role="tabpanel">
+                <div class="tuition-wrapper animate__animated animate__fadeIn">
+                    <div class="table-responsive">
+                        <table class="table table-bordered tuition-table text-center mb-0" style="min-width: 800px;">
+                            <thead>
+                                <tr>
+                                    <th width="20%">Ngành đào tạo</th>
+                                    <th width="15%">Đơn vị áp dụng</th>
+                                    <th width="20%">Học phí<br />(VNĐ)</th>
+                                    <th width="22%">Học phí sau học bổng 25%<br />(VNĐ)</th>
+                                    <th width="23%">Học phí sau học bổng 50%<br />(VNĐ)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-center align-middle">
+                                @if (listKySu.Any())
+                                {
+                                    var groups = listKySu.GroupBy(x => new { x.NganhDaoTao, x.ThoiGian }).ToList();
+                                    foreach (var group in groups)
+                                    {
+                                        var items = group.ToList();
+                                        for (int i = 0; i < items.Count; i++)
+                                        {
+                                            <tr class="@(items[i].LaDongPhu ? "bg-light-red" : "")">
+                                                @if (i == 0)
+                                                {
+                                                    <td rowspan="@items.Count" class="text-dark-blue fw-bold text-start ps-3">
+                                                        @group.Key.NganhDaoTao<br />
+                                                        <span class="small text-muted fw-normal">(@group.Key.ThoiGian)</span>
+                                                    </td>
+                                                }
+                                                <td class="text-dark-blue fw-bold">@items[i].DonViApDung</td>
+                                                <td class="text-blue fw-bold">@items[i].MucHocPhi</td>
+                                                <td class="text-red fw-bold">@items[i].HocPhiGiam25</td>
+                                                <td class="text-red fw-bold">@items[i].HocPhiGiam50</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="5" class="py-4 text-muted fst-italic">Chưa có thông tin học phí hệ Kỹ sư.</td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 mt-5">
+        <h2 class="fw-bold m-0" style="color: #1a237e; border-left: 5px solid #f8ca00; padding-left: 15px;">Thông Tin Học Bổng</h2>
+    </div>
+    <div class="row g-4 mb-5">
+        @if (hocBongs.Count > 0)
+        {
+            foreach (var item in hocBongs)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark h-100 d-block">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden news-card">
+                            <img src="@item.DuongDanAnh" class="card-img-top" style="height: 220px; object-fit: cover;">
+                            <div class="card-body p-4">
+                                <div class="text-warning fw-bold small mb-2">@item.NgayTao.ToString("dd/MM/yyyy")</div>
+                                <h5 class="card-title fw-bold mb-3" style="color: #1a237e;">@Html.Raw(item.TieuDe)</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+
+    @if (camNhans.Count > 0)
+    {
+        <div class="testimonial-section shadow-sm">
+            <h2 class="testimonial-title">CẢM NHẬN CỦA SINH VIÊN VỀ CHƯƠNG TRÌNH VIỆT - HÀN</h2>
+            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner px-md-4">
+                    @for (int i = 0; i < camNhans.Count; i += 2)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="row g-4 justify-content-center align-items-center">
+                                <div class="col-12 col-md-6">
+                                    <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-start px-3">
+                                        <div class="testimonial-img-wrapper mb-3 mb-sm-0">
+                                            <img src="@camNhans[i].DuongDanAnh" class="testimonial-img" alt="Avatar">
+                                        </div>
+                                        <div class="flex-grow-1 text-center text-sm-start">
+                                            <div class="testimonial-name">@Html.Raw(camNhans[i].TieuDe)</div>
+                                            <div class="testimonial-role">@Html.Raw(camNhans[i].TieuDe2)</div>
+                                            <div class="testimonial-content">@Html.Raw(camNhans[i].NoiDung)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if (i + 1 < camNhans.Count)
+                                {
+                                    <div class="col-12 col-md-6">
+                                        <div class="d-flex flex-column flex-sm-row align-items-center align-items-sm-start px-3">
+                                            <div class="testimonial-img-wrapper mb-3 mb-sm-0">
+                                                <img src="@camNhans[i+1].DuongDanAnh" class="testimonial-img" alt="Avatar">
+                                            </div>
+                                            <div class="flex-grow-1 text-center text-sm-start">
+                                                <div class="testimonial-name">@Html.Raw(camNhans[i + 1].TieuDe)</div>
+                                                <div class="testimonial-role">@Html.Raw(camNhans[i + 1].TieuDe2)</div>
+                                                <div class="testimonial-content">@Html.Raw(camNhans[i + 1].NoiDung)</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                @if (camNhans.Count > 2)
+                {
+                    <div class="d-flex justify-content-center mt-5 gap-3">
+                        <button class="testimonial-nav-btn shadow" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev"><i class="fas fa-chevron-left"></i></button>
+                        <button class="testimonial-nav-btn shadow" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    @if (baoChis.Any())
+    {
+        <div class="press-section shadow-sm position-relative">
+            <h2 class="press-title">BÁO CHÍ NÓI VỀ VIỆN CÔNG NGHỆ VIỆT - HÀN</h2>
+
+            <div id="pressSlider" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner px-md-5">
+                    @for (int i = 0; i < baoChis.Count; i += 2)
+                    {
+                        <div class="carousel-item @(i == 0 ? "active" : "")">
+                            <div class="row g-4 justify-content-center">
+                                @for (int j = i; j < i + 2 && j < baoChis.Count; j++)
+                                {
+                                    var rawLink = baoChis[j].TieuDe2 ?? "";
+                                    var cleanLink = System.Text.RegularExpressions.Regex.Replace(rawLink, "<.*?>", string.Empty).Trim();
+
+                                    <div class="col-12 col-md-6">
+                                        <a href="@cleanLink" target="_blank" class="text-decoration-none">
+                                            <div class="card press-card">
+                                                <div class="press-img-container">
+                                                    <img src="@baoChis[j].DuongDanAnh" class="press-img" alt="Báo chí">
+                                                </div>
+                                                <div class="press-name">
+                                                    @Html.Raw(baoChis[j].TieuDe.Replace("<p>", "").Replace("</p>", ""))
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                @if (baoChis.Count > 2)
+                {
+                    <button class="carousel-control-prev press-control" type="button" data-bs-target="#pressSlider" data-bs-slide="prev" style="left: 0px;">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next press-control" type="button" data-bs-target="#pressSlider" data-bs-slide="next" style="right: 0px;">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 mt-5">
+        <h2 class="fw-bold m-0" style="color: #1a237e; border-left: 5px solid #c62828; padding-left: 15px;">Hoạt Động Nổi Bật</h2>
+    </div>
+    <div class="row g-4 mb-5">
+        @if (tinTucs.Count > 0)
+        {
+            foreach (var item in tinTucs)
+            {
+                <div class="col-12 col-md-6 col-lg-4">
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Id" class="text-decoration-none text-dark h-100 d-block">
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden news-card">
+                            <img src="@item.DuongDanAnh" class="card-img-top" style="height: 220px; object-fit: cover;">
+                            <div class="card-body p-4">
+                                <h5 class="card-title fw-bold mb-3" style="color: #1a237e;">@Html.Raw(item.TieuDe)</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="training-section shadow-sm mb-5">
+        <div class="row">
+            <div class="col-lg-4 mb-5 mb-lg-0 pe-lg-4">
+                <h2 class="fw-bold mb-4 training-title">Các Ngành &<br /> Khối đào tạo</h2>
+                <p class="text-muted mb-4" style="line-height: 1.7; text-align: justify;">VKIT hiện có nhiều khối ngành đào tạo với các chuyên ngành công nghệ và ngôn ngữ khác nhau, trong đó bao gồm nhiều ngành nghề đang được xã hội quan tâm nhất. Chương trình học được thiết kế theo chuẩn quốc tế.</p>
+            </div>
+            <div class="col-lg-8 border-start-lg ps-lg-4">
+                <div class="row g-4">
+                    <div class="col-md-6 col-lg-4">
+                        <div class="d-flex align-items-start"><i class="fas fa-microchip fs-4 text-danger me-3 mt-1"></i><h5 class="fw-bold category-title mb-0">Khối ngành kỹ thuật</h5></div>
+                        <ul class="list-unstyled faculty-list">
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="1">Công nghệ Thông tin</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="2">Công nghệ Kỹ thuật Ô tô</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="3">Công nghệ Ô Tô Điện</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="d-flex align-items-start"><i class="fas fa-chart-line fs-4 text-danger me-3 mt-1"></i><h5 class="fw-bold category-title mb-0">Khối ngành Kinh tế</h5></div>
+                        <ul class="list-unstyled faculty-list">
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="4">Quản trị Kinh doanh</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="5">Kinh doanh Quốc tế</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="6">Marketting</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="7">Digital Marketting</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="8">Logistics & QLCCU</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="9">Tài chính - Ngân Hàng</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6 col-lg-4">
+                        <div class="d-flex align-items-start"><i class="fas fa-globe fs-4 text-danger me-3 mt-1"></i><h5 class="fw-bold category-title mb-0">Khối ngành Xã hội</h5></div>
+                        <ul class="list-unstyled faculty-list">
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="10">Quan hệ Công chúng</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="11">Quản trị Khách sạn</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="12">Quản trị Du lịch & Lữ hành</a></li>
+                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="13">Ngôn ngữ Hàn Quốc</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (videos.Count > 0)
+{
+    <script>
+        const playlist = @Html.Raw(Json.Serialize(videos.Select(v => new { videoUrl = v.DuongDanVideo, title = v.TieuDe, subTitle = string.IsNullOrEmpty(v.TieuDe2) ? v.MoTaNgan : v.TieuDe2, content = v.NoiDung })));
+        let currentIndex = 0, player;
+        function getYouTubeId(url) {
+            if (!url) return '';
+            const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+        var tag = document.createElement('script'); tag.src = "https://www.youtube.com/iframe_api";
+        document.getElementsByTagName('script')[0].parentNode.insertBefore(tag, document.getElementsByTagName('script')[0]);
+        function onYouTubeIframeAPIReady() {
+            let firstVideoId = getYouTubeId(playlist[0].videoUrl);
+            if (!firstVideoId) return;
+            player = new YT.Player('youtubePlayerAPI', {
+                height: '100%', width: '100%', videoId: firstVideoId, host: 'https://www.youtube-nocookie.com',
+                playerVars: { 'playsinline': 1, 'autoplay': 1, 'mute': 1, 'rel': 0 },
+                events: { 'onReady': onPlayerReady, 'onStateChange': (e) => { if (e.data === YT.PlayerState.ENDED) nextVideo(); } }
+            });
+        }
+        function onPlayerReady(event) { updateTextContent(); event.target.playVideo(); }
+        function updateTextContent() {
+            document.getElementById('currentVideoTitle').innerHTML = playlist[currentIndex].title;
+        }
+        function nextVideo() {
+            currentIndex = (currentIndex + 1) >= playlist.length ? 0 : currentIndex + 1;
+            let nextId = getYouTubeId(playlist[currentIndex].videoUrl);
+            if(nextId && player) { player.loadVideoById(nextId); updateTextContent(); }
+        }
+    </script>
+}
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var pressEl = document.querySelector('#pressSlider');
+        if (pressEl) {
+            var pCarousel = new bootstrap.Carousel(pressEl, {
+                interval: 3500,
+                wrap: true,
+                pause: 'hover'
+            });
+            pCarousel.cycle();
+        }
+
+        var testimonialEl = document.querySelector('#testimonialCarousel');
+        if (testimonialEl) {
+            var tCarousel = new bootstrap.Carousel(testimonialEl, {
+                interval: 3000,
+                wrap: true
+            });
+            tCarousel.cycle();
+        }
+    });
+</script>

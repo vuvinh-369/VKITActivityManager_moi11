@@ -1,0 +1,224 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - VKIT University</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        :root {
+            --vlu-red: #c62828;
+            --vlu-dark: #1a237e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* KHUNG MENU CHÍNH */
+        .main-nav {
+            background: #fff;
+            border-bottom: 3px solid var(--vlu-red);
+            padding: 8px 0;
+            z-index: 1050;
+        }
+
+        /* Kích thước Logo tối ưu */
+        .vkit-logo {
+            height: 60px;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+            transition: all 0.3s ease;
+        }
+
+        /* DẢI BANNER ĐỎ BÊN DƯỚI MENU */
+        .vlu-sub-header {
+            position: relative;
+            z-index: 999;
+            background: var(--vlu-red);
+            color: white;
+            padding: 8px 0;
+            font-weight: bold;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* THIẾT KẾ NÚT BẤM MENU */
+        .vlu-menu-link {
+            color: var(--vlu-dark) !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            padding: 8px 16px !important;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .vlu-menu-link:hover {
+                background-color: var(--vlu-red);
+                color: #ffffff !important;
+                box-shadow: 0 4px 10px rgba(198, 40, 40, 0.2);
+            }
+
+        /* TÙY CHỈNH RESPONSIVE KHẮT KHE TRÊN ĐIỆN THOẠI */
+        @@media (max-width: 991.98px) {
+            .main-nav {
+                height: 60px; /* Khóa cứng chiều cao thanh nav trên Mobile */
+                padding: 0 !important;
+            }
+            .vkit-logo {
+                height: 42px;
+            }
+            /* Áp dụng cấu trúc Grid chia 3 phần bằng chặn trên Mobile */
+            .mobile-grid-header {
+                display: grid !important;
+                grid-template-columns: 1fr auto 1fr;
+                align-items: center;
+                width: 100%;
+            }
+
+            .navbar-collapse {
+                background: #ffffff;
+                padding: 15px;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+                margin-top: 10px;
+                border: 1px solid #eee;
+                width: 100%;
+            }
+
+            .vlu-menu-link {
+                width: 100%;
+                margin-bottom: 5px;
+                padding: 10px 20px !important;
+                border-radius: 8px;
+            }
+
+            .vlu-sub-header {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light main-nav shadow-sm py-2">
+        <div class="container d-flex flex-wrap align-items-center justify-content-between">
+
+            <div class="mobile-grid-header w-100 d-lg-none">
+
+                <div class="text-start">
+                    <a href="/" class="p-0 m-0 d-inline-block">
+                        <img src="~/images/hoatdong/logoviethan.jpg" class="vkit-logo" />
+                    </a>
+                </div>
+
+                <div class="d-flex flex-grow-1 justify-content-center align-items-center">
+                    <h3 class="m-0 d-none d-lg-block fw-bold text-nowrap" style="font-size: 25px; letter-spacing: 1.2px; color: var(--vlu-dark);">
+                        VIỆN CÔNG NGHỆ <span style="color: var(--vlu-red);">VIỆT HÀN</span>
+                    </h3>
+                    <h1 class="m-0 fw-bold d-lg-none text-nowrap" style="font-size: 14px; letter-spacing: 0.5px; color: var(--vlu-dark);">
+                        VIỆN CÔNG NGHỆ <span style="color: var(--vlu-red);">VIỆT HÀN</span>
+                    </h1>
+                </div>
+
+                <div class="text-end">
+                    <button class="navbar-toggler border-0 shadow-none p-0" type="button" data-bs-toggle="collapse" data-bs-target="#vluNavbar" style="height: 42px; width: 42px; display: inline-flex; align-items: center; justify-content: flex-end;">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </div>
+
+            </div>
+
+            <a href="/" class="navbar-brand m-0 p-0 d-none d-lg-flex align-items-center">
+                <img src="~/images/hoatdong/logoviethan.jpg" class="vkit-logo me-3" />
+            </a>
+
+            <div class="position-absolute start-50 top-50 translate-middle text-center d-none d-lg-block" style="pointer-events: none; z-index: 5; width: max-content;">
+                <h3 class="m-0 fw-bold text-nowrap" style="font-size: 25px; letter-spacing: 1.2px; text-shadow: 1px 1px 2px rgba(0,0,0,0.05);">
+                    <span style="color: var(--vlu-dark);">VIỆN CÔNG NGHỆ</span>
+                    <span style="color: var(--vlu-red);">VIỆT HÀN</span>
+                </h3>
+            </div>
+            @if (ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin")
+            {
+                <a href="/" class="vlu-menu-link">
+                    <i class="fas fa-home me-1"></i> Trang chủ
+                </a>
+            }
+            
+
+        </div>
+    </nav>
+
+    <div class="vlu-sub-header shadow-sm">
+        <div class="container text-truncate">
+            NĂNG ĐỘNG SÁNG TẠO <i class="fas fa-star mx-1 text-warning"></i> BỨT PHÁ TƯƠNG LAI
+        </div>
+    </div>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="text-white pt-4 pb-3 mt-auto" style="background-color: #1a1a1a; font-size: 0.95rem;">
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-12 mx-auto">
+                    <h5 class="fw-bold mb-3" style="color: #ffff; letter-spacing: 1px;">
+                        VIỆN CÔNG NGHỆ VIỆT HÀN (VKIT) | TRƯỜNG ĐẠI HỌC CÔNG NGHỆ TP.HCM (HUTECH)
+                    </h5>
+
+                    <p class="mb-2">
+                        <i class="fas fa-map-marker-alt me-2 text-danger"></i>
+                        Trụ sở Điện Biên Phủ: 475A Điện Biên Phủ, Phường Thạnh Mỹ Tây, TP.HCM
+                    </p>
+
+                    <p class="mb-2 d-flex flex-wrap justify-content-center align-items-center gap-2 gap-md-3">
+                        <span><i class="fas fa-phone-alt me-2" style="color: #4caf50;"></i>Điện thoại: (028) 3556 6109</span>
+                        <span class="d-none d-md-inline text-secondary">|</span>
+                        <span><i class="fas fa-comment-dots me-2" style="color: #0088cc;"></i>Zalo: 0397 953 837 (Thầy Thanh Vang)</span>
+                        <span class="d-none d-md-inline text-secondary">|</span>
+                        <span><i class="fas fa-envelope me-2" style="color: #ff9800;"></i>Email: vkit@hutech.edu.vn</span>
+                    </p>
+
+                    <p class="mb-3">
+                        <i class="fas fa-globe me-2 text-primary"></i>Website:
+                        <a href="https://hutech.edu.vn/VKIT" target="_blank" class="text-white text-decoration-none custom-link">
+                            hutech.edu.vn/VKIT
+                        </a>
+                    </p>
+
+                    <hr class="mb-3 mx-auto" style="border-color: #444; width: 80%;">
+
+                    <div class="small" style="color: #aaa;">
+                        &copy; @DateTime.Now.Year - Bản quyền thuộc về Viện Công Nghệ Việt Hàn (VKIT)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .custom-link {
+            transition: color 0.3s ease;
+        }
+
+            .custom-link:hover {
+                color: #f8ca00 !important;
+                text-decoration: underline !important;
+            }
+    </style>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
