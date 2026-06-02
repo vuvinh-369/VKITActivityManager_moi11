@@ -1,22 +1,202 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+/*Thêm*/
+/* Thêm font chữ Inter hiện đại cho tiêu đề và dải băng thông báo */
+.main-nav, .vlu-sub-header, .position-absolute h3 {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Khu vực Ưu điểm chương trình chứa hoa anh đào */
+.advantages-section {
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+    /* Hiển thị cành hoa anh đào ẩn góc trái trên cùng */
+    .advantages-section::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        width: 400px;
+        height: 400px;
+        background-image: url('/images/phongnen/hoa_anh_dao.png');
+        background-size: contain;
+        background-position: left top;
+        background-repeat: no-repeat;
+        opacity: 0.85;
+        z-index: -1;
+        pointer-events: none;
+    }
+
+/* Vách ngăn bông hoa xinh xắn ở Tiêu đề phụ */
+.section-subtitle {
+    position: relative;
+    padding-bottom: 30px;
+}
+
+    .section-subtitle::after {
+        content: "✿";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: #93C5FD;
+    }
+
+    .section-subtitle::before {
+        content: "";
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 1px;
+        background-color: #E2E8F0;
+        z-index: -1;
+    }
+
+@media (max-width: 767.98px) {
+    /* Thu nhỏ tiêu đề chính cho vừa màn hình điện thoại */
+    .section-title {
+        font-size: 24px; /* Giảm xuống 24px để chữ không bị tràn/xuống dòng xấu */
+        font-weight: 700;
+        letter-spacing: -0.01em;
+    }
+    /* Tiêu đề phụ (mô tả) */
+    .section-subtitle {
+        font-size: 14px;
+        line-height: 1.5;
+        padding-bottom: 25px; /* Khoảng cách vừa phải tới vách ngăn hoa đào */
+    }
+    /* Thu nhỏ cành hoa anh đào trên điện thoại để không che mất chữ */
+    .advantages-section::before {
+        width: 200px; /* Trên mobile chỉ để hoa hiện nhỏ nhỏ ở góc thôi */
+        height: 200px;
+        opacity: 0.6; /* Làm mờ hơn một chút trên màn hình nhỏ */
+    }
+    /* Tối ưu các ô nội dung (Card) trên điện thoại */
+    .advantage-card {
+        padding: 24px 18px;
+        margin-bottom: 15px; /* Tạo khoảng cách giữa các card khi xếp chồng lên nhau */
+        border-radius: 16px; /* Bo góc mịn màng chuẩn UI hiện đại */
+    }
+    /* Thu nhỏ vòng tròn chứa Icon */
+    .advantage-icon {
+        width: 65px;
+        height: 65px;
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+}
+/* Css của các loại học bổng*/
+/* Tổng thể vùng học bổng nền xám cực nhẹ để làm nổi bật Card trắng */
+.vkit-scholarship-section {
+    background-color: #f8fafc;
+    border-radius: 24px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Thiết kế Thẻ học bổng kiểu Hàn Quốc */
+.kor-scholarship-card {
+    background: #ffffff !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 18px rgba(15, 23, 42, 0.03) !important; /* Đổ bóng siêu mờ nhẹ */
+    transition: all 0.4s cubic-bezier(0.215, 0.610, 0.355, 1) !important;
+    overflow: hidden;
+    border: 1px solid #e2e8f0 !important; /* Viền mảnh sắc nét */
+}
+
+/* Thanh màu trang trí góc xiên thông minh */
+.card-color-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    transition: height 0.4s ease;
+}
+
+/* Badge Suất nổi bật, bo tròn tinh tế */
+.kor-badge {
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Tiêu đề card */
+.kor-card-title {
+    font-size: 1.2rem !important;
+    color: #1e293b !important;
+    line-height: 1.5;
+    font-weight: 700 !important;
+    min-height: 54px;
+}
+
+/* Mô tả */
+.kor-card-desc {
+    color: #64748b !important;
+    line-height: 1.6;
+    font-size: 0.875rem !important;
+}
+
+/* Thiết kế nút bấm chuẩn Corporate cứng cáp và tinh tế */
+.kor-btn-submit {
+    background-color: #f1f5f9 !important;
+    color: #334155 !important;
+    border: none !important;
+    padding: 11px 20px !important;
+    border-radius: 12px !important;
+    font-size: 0.85rem !important;
+    transition: all 0.3s ease !important;
+}
+
+.kor-scholarship-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 35px rgba(15, 23, 42, 0.08) !important; /* Bóng đổ sâu hơn khi hover */
+    border-color: var(--hb-color) !important; /* Viền thẻ tự đổi thành màu chủ đạo */
+}
+
+    /* Khi di chuột vào card, nút bấm tự động lấp đầy màu rực rỡ */
+    .kor-scholarship-card:hover .kor-btn-submit {
+        background-color: var(--btn-color) !important;
+        color: #ffffff !important;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Mũi tên dịch chuyển nhẹ phóng khoáng */
+    .kor-scholarship-card:hover .kor-arrow {
+        transform: translateX(4px);
+        transition: transform 0.3s ease;
+    }
+
+.kor-arrow {
+    transition: transform 0.3s ease;
 }

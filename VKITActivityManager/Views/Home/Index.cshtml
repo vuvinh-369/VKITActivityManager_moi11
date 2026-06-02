@@ -21,6 +21,7 @@
     // Lấy ID Youtube cho video lớn (nếu không có thì lấy tạm video nhỏ đầu tiên)
     string firstVideoId = videoLon != null ? LấyIdYoutube(videoLon.DuongDanVideo) : (videoNhoList.Any() ? LấyIdYoutube(videoNhoList.First().DuongDanVideo) : "");
 }
+
 <style>
     /* BANNER CSS */
     .vlu-hero-carousel {
@@ -30,60 +31,99 @@
         right: 50%;
         margin-left: -50vw;
         margin-right: -50vw;
-        background-color: #000;
+        background-color: #0A2540; /*#000; (thay đổi màu gốc benner*/ 
+        overflow: hidden; /* thêm */
     }
-
+    /* Thêm một lớp phủ tối mờ tinh tế giúp chữ (nếu có) nổi bật hơn */
+    .vlu-hero-carousel::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(10, 37, 64, 0.1) 0%, rgba(10, 37, 64, 0.4) 100%);
+    pointer-events: none;
+}
     .vlu-banner-img {
         width: 100%;
         height: calc(100vh - 110px);
         min-height: 400px;
         object-fit: cover;
         display: block;
+        filter: brightness(0.92) contrast(1.02); /* Cân bốc màu sắc ảnh trong trẻo hơn */
+        transition: transform 8s ease; /* Hiệu ứng zoom nhẹ khi chuyển slide kiểu cao cấp */
     }
-
+    /* Hiệu ứng zoom ảnh nhẹ khi slide hoạt động */
+    .carousel-item.active .vlu-banner-img {
+    transform: scale(1.03);
+    }
     .carousel-indicators [data-bs-target] {
-        width: 12px;
-        height: 12px;
+        width: 8px; /*12px;*/
+        height: 8px; /*12px;*/
         border-radius: 50%;
         margin: 0 6px;
+        background-color: #ffffff; /* thêm */
+        opacity: 0.4; 
+        border: none;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .carousel-indicators .active {
-        background-color: #c62828;
-        transform: scale(1.2);
+        background-color:#00D4B2; /*#c62828;*/
+        /*transform: scale(1.2);*/
+        opacity: 1;
+        width: 24px; /* Kéo dài ra thành hình viên thuốc phẳng */
+        border-radius: 4px;
+        transform: none;
     }
 
     /* CẢM NHẬN SINH VIÊN */
     .testimonial-section {
-        background-color: #f8f9fa;
-        border-radius: 30px;
-        padding: 60px 30px;
+        background-color:#F8FAFC; /*#f8f9fa;*/
+        border-radius: 24px; /*30px;*/
+        padding: 80px 40px; /*60px 30px;*/
         margin-top: 60px;
         margin-bottom: 50px;
+        border: 1px solid rgba(0, 0, 0, 0.02); /* Viền mờ như không viền */
     }
 
     .testimonial-title {
-        color: #c62828;
-        font-size: 2rem;
-        font-weight: bold;
+        color: #0A2540; /*#c62828;*/
+        font-size: 2.25rem; /*2rem;*/
+        font-weight: 700; /*bold;*/
         text-align: center;
-        text-transform: uppercase;
-        margin-bottom: 50px;
+        text-transform:none; /* Người Hàn chuộng chữ viết thường tự nhiên, thanh lịch */ /*uppercase;*/
+        letter-spacing: -0.03em; /*Thêm để tạo cảm giác*/
+        margin-bottom: 60px; /*50px;*/
+        position: relative;
+    }
+    /* Thêm dấu gạch nhỏ tinh tế dưới tiêu đề */
+    .testimonial-title::after {
+     content: '';
+     position: absolute;
+     bottom: -15px;
+     left: 50%;
+     transform: translateX(-50%);
+     width: 40px;
+     height: 3px;
+     background: #00D4B2; /* Điểm nhấn xanh ngọc */
+     border-radius: 2px;
     }
 
     .testimonial-img-wrapper {
-        width: 180px;
-        height: 180px;
+        width: 150px; /*180px;*/
+        height: 150px; /*180px;*/
         border-radius: 50%;
-        border: 4px solid #800000;
-        padding: 5px;
-        background: white;
+        border: 1px solid #E2E8F0; /* Bỏ viền đỏ dày, thay bằng viền mảnh màu xám nhẹ */ /*4px solid #800000;*/
+        padding: 6px; /*5px;*/
+        background: #ffffff; /*white;*/
         flex-shrink: 0;
-        margin-right: 25px;
-        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        margin-right: 30px; /*25px;*/
+        box-shadow: 0 10px 30px rgba(10, 37, 64, 0.06); /* Đổ bóng mịn màng */ /*0 8px 15px rgba(0,0,0,0.1);*/
     }
-
-    .testimonial-img {
+    /* giữ nguyên */
+    .testimonial-img { 
         width: 100%;
         height: 100%;
         border-radius: 50%;
@@ -91,13 +131,13 @@
     }
 
     .testimonial-name {
-        color: #d35400;
-        font-size: 1.4rem;
-        font-weight: bold;
+        color: #0A2540; /* Tên sinh viên chuyển sang Navy đậm */ /*#d35400;*/
+        font-size: 1.35rem; /*1.4rem;*/
+        font-weight: 700; /*bold;*/
         text-transform: uppercase;
-        margin-bottom: 5px;
+        margin-bottom: 6px; /*5px;*/
     }
-
+    /* giữ nguyên */
         .testimonial-name p, .testimonial-role p {
             display: inline;
             margin: 0;
@@ -105,79 +145,104 @@
         }
 
     .testimonial-role {
-        color: #666;
-        font-style: italic;
-        font-size: 0.95rem;
-        margin-bottom: 15px;
+        color: #64748B; /*#666;*/
+        font-style: normal; /*italic;*/
+        font-size: 0.9rem; /*0.95rem;*/
+        font-weight: 500; /*thêm */
+        margin-bottom: 20px; /*15px;*/
+        opacity: 0.8; /*thêm */
     }
 
     .testimonial-content {
-        color: #333;
-        font-size: 1rem;
-        line-height: 1.7;
-        text-align: justify;
+        color: #475569; /* Màu chữ tối vừa phải, đọc lâu không mỏi mắt */ /*#333;*/
+        font-size: 1.05rem; /*1rem;*/
+        line-height: 1.8; /*1.7;*/
+        text-align: left; /*justify;*/
+        font-weight: 400; /*thêm */
     }
 
     .testimonial-nav-btn {
-        background-color: #e65100;
-        border: none;
-        color: white;
+        background-color: #ffffff; /*#e65100;*/
+        border: 1px solid #E2E8F0; /*none;*/
+        color: #0A2540; /*white;*/
         border-radius: 50%;
-        width: 45px;
-        height: 45px;
+        width: 48px; /*45px;*/
+        height: 48px; /*45px;*/
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        transition: 0.3s;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.04); /*Thêm*/
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); /*0.3s;*/
     }
 
         .testimonial-nav-btn:hover {
-            background-color: #c62828;
+        background-color: #0A2540; /*#c62828;*/
+        color: #ffffff; /*Thêm*/
+        border-color: #0A2540;
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(10, 37, 64, 0.15);
         }
 
     /* BÁO CHÍ */
     .press-section {
-        background-color: #f8f9fa;
-        border-radius: 30px;
-        padding: 60px 20px;
-        margin: 50px 0;
+        background-color: #F8FAFC; /*#f8f9fa;*/
+        border-radius: 24px; /*30px;*/
+        padding: 80px 20px; /*60px 20px;*/
+        margin: 60px 0; /*50px 0;*/
+        border: 1px solid rgba(0, 0, 0, 0.02); /* Viền mờ như không viền */
     }
 
     .press-title {
-        color: #c62828;
-        font-size: 2rem;
-        font-weight: bold;
+        color: #0A2540; /* Đổi sang màu Xanh Navy học thuật chủ đạo */ /*#c62828;*/
+        font-size: 2.25rem; /*2rem;*/
+        font-weight: 700; /*bold;*/
         text-align: center;
-        text-transform: uppercase;
-        margin-bottom: 50px;
+        text-transform: none; /* Bỏ viết hoa toàn bộ để tạo sự sang trọng nhẹ nhàng */ /*uppercase;*/
+        letter-spacing: -0.03em; /* Thêm chút kerning để tạo cảm giác tinh tế hơn */
+        margin-bottom:60px; /*50px;*/
+        position: relative; /* Thêm để tạo hiệu ứng gạch chân */
     }
+    /* Thanh gạch dưới tiêu đề đồng bộ với các phần trên */
+    .press-title::after {
+        content: '';
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 3px;
+        background: #00D4B2; /* Điểm nhấn xanh ngọc mượt mà */
+        border-radius: 2px;
+}
 
     .press-card {
-        background: #fff;
-        border-radius: 15px;
+        background: #ffffff; /*#fff;*/
+        border-radius: 16px; /*15px;*/
         overflow: hidden;
-        transition: 0.3s;
-        border: 1px solid #eee;
+        /* Sử dụng cubic-bezier giúp hiệu ứng hover trượt cực kỳ mượt và sang */
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /*0.3s;*/
+        border: 1px solid rgba(0, 0, 0, 0.04); /*1px solid #eee;*/
         height: 100%;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 20px rgba(10, 37, 64, 0.02); /* Đổ bóng siêu mờ */ /*0 5px 15px rgba(0,0,0,0.05);*/
         display: flex;
         flex-direction: column;
     }
-
+    /* Hiệu ứng tương tác khi di chuột vào thẻ */
         .press-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-            border-color: #c62828;
+            transform: translateY(-6px); /*(-10px)*/
+            box-shadow: 0 20px 40px rgba(10, 37, 64, 0.08); /*0 15px 30px rgba(0,0,0,0.1);*/
+            border-color: rgba(0, 212, 178, 0.3); /*#c62828;*/
         }
 
     .press-img-container {
-        height: 500px;
+        height: 380px; /*500px;*/
         width: 100%;
         overflow: hidden;
-        background: #fff;
+        background: #ffffff; /*#fff;*/
         display: flex;
         align-items: center;
         justify-content: center;
+        position: relative; /*Thêm */
     }
 
     .press-img {
@@ -185,139 +250,381 @@
         height: 100%;
         object-fit: cover;
         object-position: top center;
-        image-rendering: high-quality;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #F1F5F9; /*1px solid #f0f0f0;*/
+        /* Chuẩn bị hiệu ứng phóng to ảnh mượt mà */
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
+    /* Khi hover vào card, ảnh bên trong tự động zoom nhẹ quý phái */
+    .press-card:hover .press-img {
+        transform: scale(1.04);
+    }
     .press-name {
-        font-size: 1.3rem;
-        font-weight: bold;
-        color: #333;
-        padding: 25px 15px;
+        font-size: 1.15rem; /* Thu nhỏ chữ tiêu đề báo một chút để tăng sự tinh tế */ /*1.3rem;*/
+        font-weight: 600; /*bold;*/
+        color: #1E293B; /*#333;*/
+        padding: 24px 20px; /*25px 15px;*/
         text-align: center;
         flex-grow: 1;
         display: flex;
         align-items: center;
         justify-content: center;
+        line-height: 1.5; /* Thêm để tạo cảm giác thoáng đãng hơn */
+        transition: color 0.3s ease; /*thêm*/
     }
-
+    /*thêm*/
+    .press-card:hover .press-name {
+        color: #0A2540;
+    }
+    /* Nút điều hướng mũi tên qua lại của Slider báo chí */
     .press-control {
-        width: 55px;
-        height: 55px;
-        background: #555;
+        width: 48px; /*55px;*/
+        height: 48px; /*55px;*/
+        background: #ffffff; /*#555;*/
+        border: 1px solid #E2E8F0; /*thêm*/
+        color: #0A2540; /*thêm*/
         border-radius: 50%;
         top: 50%;
         transform: translateY(-50%);
-        opacity: 0.9;
+        opacity: 1; /*0.9;*/
+        display: inline-flex; /*thêm*/
+        align-items: center; /*thêm*/
+        justify-content: center; /*thêm*/
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05); /*thêm*/
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); /*thêm*/
     }
 
         .press-control:hover {
-            background: #c62828;
-            opacity: 1;
+            background: #0A2540; /*#c62828;*/
+            /*opacity: 1;*/
+            color: #ffffff; /*thêm*/
+            border-color: #0A2540; /*thêm*/
+            box-shadow: 0 8px 20px rgba(10, 37, 64, 0.15); /*thêm*/
         }
 
-    /* ĐÀO TẠO, HỌC PHÍ... */
+    /* VIDEO CSS */
+    .video-main-container {
+        background-color: #ffffff;
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(10, 37, 64, 0.04); /*0 10px 35px rgba(0,0,0,0.05);*/
+        padding: 40px; /*30px;*/
+        border: 1px solid rgba(0, 0, 0, 0.02); /*thêm*/
+    }
+
+    .video-player-wrapper {
+        border-radius: 16px; /*20px;*/
+        overflow: hidden;
+        background-color: #0A2540; /*#000;*/
+        position: relative;
+        box-shadow: 0 15px 35px rgba(10, 37, 64, 0.12); /*0 5px 20px rgba(0,0,0,0.15);*/
+    }
+
+    .youtube-container {
+        position: relative;
+        padding-bottom: 56.25%;
+        height: 0;
+        overflow: hidden;
+        max-width: 100%;
+        background: #0A2540; /*#000;*/
+    }
+
+        .youtube-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+    .video-content-scroll {
+        max-height: 240px; /*220px;*/
+        overflow-y: auto;
+        padding-right: 12px; /*8px;*/
+    }
+    /*Thêm*/
+    .video-content-scroll::-webkit-scrollbar {
+        width: 6px; 
+    }
+    /*Thêm*/
+    /* Định dạng phần nền của đường ray cuộn */
+    .video-content-scroll::-webkit-scrollbar-track {
+        background: #F1F5F9; /* Màu xám siêu nhạt */
+        border-radius: 10px;
+    }
+    /*Thêm*/
+    /* Định dạng cục chạy cuộn (Thumb) */
+    .video-content-scroll::-webkit-scrollbar-thumb {
+        background: #CBD5E1; /* Màu xám Slate mờ */
+        border-radius: 10px;
+        transition: background 0.3s ease;
+    }
+    /*Thêm*/
+    /* Hiệu ứng khi di chuột vào thanh cuộn sẽ đậm lên một chút */
+    .video-content-scroll::-webkit-scrollbar-thumb:hover {
+        background: #94A3B8; 
+    }
+
+    /* TIN TỨC, HỌC BỔNG, ƯU ĐIỂM, ĐÀO TẠO, HỌC PHÍ... */
+    .news-card {
+        /*transition: transform 0.3s ease, box-shadow 0.3s ease;*/
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        border-radius: 16px;
+        background-color: #ffffff;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+        .news-card:hover {
+           /*transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;*/
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(10, 37, 64, 0.08) !important;
+            border-color: rgba(0, 212, 178, 0.3); /* Viền ánh xanh ngọc mờ đồng bộ */
+        }
+
     .training-section {
-        background-color: #f8f9fa;
-        border-radius: 20px;
-        padding: 50px 30px;
+        background-color: #F8FAFC; /*#f8f9fa;*/
+        border-radius: 24px; /*20px;*/
+        padding: 80px 40px; /*50px 30px;*/
+        border: 1px solid rgba(0, 0, 0, 0.01); /*Thêm*/
     }
 
     .training-title {
-        color: #1a237e;
-        font-size: 2.2rem;
-        line-height: 1.3;
+        color:#0A2540; /*#1a237e;*/
+        font-size: 2.25rem; /*2.2rem;*/
+        font-weight: 700; /*Thêm*/
+        line-height: 1.35; /*1.3;*/
+        letter-spacing: -0.03em; /*thêm*/
+        margin-bottom: 2.5rem; /*thêm*/
     }
 
     .category-title {
-        font-size: 1.15rem;
-        color: #222;
+        font-size: 1.2rem; /*1.15rem;*/
+        font-weight: 700; /*thêm*/
+        color: #0A2540; /*#222;*/
+        /*thêm*/
+        letter-spacing: -0.01em;
+        position: relative;
+        padding-left: 14px; /* Tạo khoảng trống để chèn vạch đứng K-Style */
+    }
+    /*Thêm*/
+    /* K-Layout Bar: Thêm vạch đứng màu xanh ngọc tinh tế bên cạnh tên Khối ngành */
+    .category-title::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 3.5px;
+        height: 16px;
+        background-color: #00D4B2; /* Màu điểm nhấn xanh ngọc phẳng */
+        border-radius: 2px;
     }
 
     .faculty-list {
-        margin-top: 10px;
-        padding-left: 35px;
+        margin-top:15px; /*10px;*/
+        padding-left: 14px; /*35px;*/
+        list-style-type: none; /*bỏ dấu chấm*/
     }
 
         .faculty-list li {
-            margin-bottom: 8px;
+            margin-bottom: 12px; /*8px;*/
         }
 
         .faculty-list a {
-            color: #666;
+           /* color: #666;
             text-decoration: none;
             font-size: 0.95rem;
-            transition: color 0.2s ease;
+            transition: color 0.2s ease;*/
+            color: #475569; /* Đổi sang màu xám Slate dịu mắt, không bị gắt */
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: inline-block;
+             /* Tạo hiệu ứng trượt chữ và đổi màu mượt mà */
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
             .faculty-list a:hover {
-                color: #c62828;
-                text-decoration: underline;
+                color: #0A2540; /*#c62828;*/
+                text-decoration: none; /*underline;*/
+                /*Thêm*/
+                transform: translateX(4px);
+                font-weight: 600;
             }
-
     /* CSS TÙY CHỈNH CHO TAB HỌC PHÍ TRÔNG HIỆN ĐẠI HƠN */
+    /*thêm*/
+    .tuition-section {
+        margin: 60px 0;
+}
+
+    .tuition-title {
+        color: #0A2540; /* Navy đậm uy tín */
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+        line-height: 1.4;
+    }
+
     .tuition-tabs-container {
         display: flex;
         justify-content: center;
-        margin-bottom: 30px;
+        margin-bottom:35px; /*30px;*/
     }
 
     .tuition-tabs {
-        background-color: #f1f3f5;
+        /* background-color: #f1f3f5;
         border-radius: 50px;
         padding: 5px;
         display: inline-flex;
-        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); */
+        background-color: #F1F5F9;
+        border-radius: 50px;
+        padding: 6px;
+        display: inline-flex;
+        border: 1px solid rgba(0,0,0,0.02);
     }
 
         .tuition-tabs .nav-link {
-            border-radius: 50px;
+            /* border-radius: 50px;
             color: #555;
             font-weight: 600;
             padding: 10px 35px;
             transition: all 0.3s ease;
             border: none;
+            background: transparent; */
+            border-radius: 50px;
+            color: #64748B;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 35px;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            border: none;
             background: transparent;
         }
 
             .tuition-tabs .nav-link:hover {
-                color: #c62828;
+                /* color: #c62828; */
+                color: #0A2540;
             }
 
             .tuition-tabs .nav-link.active {
-                background-color: #c62828;
+                /* background-color: #c62828;
                 color: #fff;
                 box-shadow: 0 4px 15px rgba(198, 40, 40, 0.3);
-                transform: translateY(-2px);
+                transform: translateY(-2px); */
+                background-color: #0A2540;
+                color: #ffffff;
+                box-shadow: 0 8px 20px rgba(10, 37, 64, 0.15);
+                transform: translateY(-1px);
             }
 
     .tuition-wrapper {
-        border: 2px solid #c62828;
+        /* border: 2px solid #c62828;
         border-radius: 12px;
         overflow: hidden;
         box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-        background: #fff;
+        background: #fff; */
+        border: 1px solid #E2E8F0;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 12px 40px rgba(10, 37, 64, 0.02);
+        background: #ffffff;
+
+        /*Thêm*/
+        .tuition-table {
+        margin-bottom: 0;
+        background-color: #ffffff;
     }
 
+    .tuition-table thead {
+        background-color: #0A2540;
+        color: #ffffff;
+    }
+
+    .tuition-table th, .tuition-table td {
+        padding: 18px 20px;
+        border: 1px solid #E2E8F0;
+        vertical-align: middle;
+    }
+
+
+    /* 2. CẤU TRÚC THẺ ƯU ĐIỂM (ADVANTAGES SECTION) */
+    .advantages-section {
+        background: linear-gradient(to bottom, #F8FAFC, #ffffff);
+        padding: 60px 0;
+    }
+
+    .section-badge {
+        display: inline-flex;
+        align-items: center;
+        background: #EFF6FF;
+        color: #2563EB;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.04);
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #0A2540;
+        letter-spacing: -0.03em;
+        position: relative;
+        display: inline-block;
+    }
+
+    .section-subtitle {
+        max-width: 650px;
+        margin: 0 auto;
+        color: #64748B;
+        font-size: 1rem;
+        line-height: 1.6;
+        font-weight: 400;
+    }
+
+    }
     .advantage-card {
-        background-color: #ffffff;
+        /* background-color: #ffffff;
         border-radius: 16px;
         padding: 25px 20px;
         height: 100%;
         transition: all 0.3s ease;
         border: 1px solid #f0f0f0;
         border-bottom: 4px solid transparent;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.02); */
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 35px 28px;
+        text-align: left;
+        border: 1px solid rgba(226, 232, 240, 0.6);
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        box-shadow: 0 10px 30px rgba(148, 163, 184, 0.05);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+    }
+    /*Thêm*/
+        .advantage-card::before {
+        display: none; /* Bỏ đường viền màu cũ */
     }
 
         .advantage-card:hover {
-            transform: translateY(-8px);
+            /* transform: translateY(-8px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-            border-bottom: 4px solid #c62828;
+            border-bottom: 4px solid #c62828; */
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(10, 37, 64, 0.08);
+            border-color: rgba(0, 212, 178, 0.2);
         }
 
     .advantage-icon {
-        width: 60px;
+        /* width: 60px;
         height: 60px;
         border-radius: 50%;
         background-color: rgba(198, 40, 40, 0.08);
@@ -327,10 +634,78 @@
         justify-content: center;
         font-size: 24px;
         margin-bottom: 18px;
+        transition: all 0.3s ease; */
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-bottom: 24px;
+        background-color: #FFF1F2;
+        color: #FF4E6E;
         transition: all 0.3s ease;
+        box-shadow: none;
+    }
+    /*Thêm*/
+    /* Đổi luân phiên màu sắc icon box cho sinh động */
+    .advantage-card:nth-child(even) .advantage-icon {
+        background-color: #EFF6FF;
+        color: #2563EB;
     }
 
-    .advantage-card:hover .advantage-icon {
+    .advantage-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #0A2540;
+        margin-bottom: 12px;
+        position: relative;
+        padding-bottom: 8px;
+        min-height: auto;
+    }
+
+    .advantage-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 24px;
+        height: 2px;
+        background-color: #E2E8F0;
+        transition: all 0.3s ease;
+    }
+    /*Thêm*/
+    .advantage-card:hover .advantage-title::after {
+    background-color: #00D4B2;
+    width: 40px;
+    }
+
+    .advantage-text {
+        color: #475569;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /* 3. LỚP MÀU BỔ TRỢ */
+    .bg-light-red {
+        background-color: #F8FAFC;
+    }
+
+    .text-blue {
+        color: #3b82f6;
+    }
+
+    .text-red {
+        color: #EF4444;
+    }
+
+    .text-dark-blue {
+        color: #0A2540;
+    }
+
+    /* .advantage-card:hover .advantage-icon {
         background-color: #c62828;
         color: #ffffff;
         transform: scale(1.1) rotate(5deg);
@@ -360,6 +735,13 @@
         color: #c62828;
         font-size: 1.8rem;
         line-height: 1.4;
+    }
+
+    .tuition-wrapper {
+        border: 2px solid #c62828;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
     }
 
     .tuition-table {
@@ -396,9 +778,9 @@
 
     .advantages-section {
         background: linear-gradient(to bottom, #f8fbff, #ffffff);
-    }
+    } */
 
-    .section-badge {
+    /* .section-badge {
         display: inline-block;
         background: #e8f0ff;
         color: #0d47a1;
@@ -423,157 +805,278 @@
         line-height: 1.7;
     }
 
-    /* ---------------------------------------------------
-               GIAO DIỆN HỌC BỔNG PREMIUM (CHUẨN ẢNH THIẾT KẾ MỚI)
-               --------------------------------------------------- */
-    .hb-premium-card {
-        display: flex;
-        align-items: stretch;
-        background-color: var(--hb-color, #4a72d4);
-        border-radius: 8px; /* Bo góc như ảnh */
-        margin-bottom: 12px;
-        cursor: pointer;
+    .advantage-card {
+        background: #fff;
+        border-radius: 24px;
+        padding: 35px 25px;
+        text-align: center;
+        transition: all .35s ease;
+        border: 1px solid #eef2f7;
         position: relative;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
         overflow: hidden;
-        border: 1px solid rgba(0,0,0,0.05);
-        text-decoration: none !important;
+        box-shadow: 0 8px 30px rgba(0,0,0,.05);
     }
 
-        .hb-premium-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        .advantage-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg,#0d47a1,#c62828);
         }
 
-    .hb-premium-left {
-        width: 120px;
-        /* Dùng nền đen mờ 20% đè lên màu thẻ để tạo dải màu đậm bên trái tự động */
-        background: rgba(0, 0, 0, 0.2);
-        /* Cắt hình chevron nhọn sang phải */
-        clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 50%, calc(100% - 15px) 100%, 0 100%);
+        .advantage-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 45px rgba(0,0,0,.12);
+        }
+
+    .advantage-icon {
+        width: 90px;
+        height: 90px;
+        margin: auto auto 25px;
+        border-radius: 50%;
         display: flex;
-        flex-direction: column;
-        justify-content: center;
         align-items: center;
-        padding-right: 15px;
-        flex-shrink: 0;
+        justify-content: center;
+        font-size: 36px;
+        color: #fff;
+        background: linear-gradient(135deg,#0d47a1,#1565c0);
+        box-shadow: 0 10px 25px rgba(13,71,161,.25);
     }
 
-    .hb-premium-num {
-        font-size: 38px !important;
-        font-weight: 900 !important;
-        color: #ffffff !important;
-        line-height: 1 !important;
-        margin: 0 0 2px 0 !important;
-        font-family: 'Arial Black', Impact, sans-serif !important;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    .advantage-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1a237e;
+        margin-bottom: 15px;
+        min-height: 52px;
     }
 
-    .hb-premium-unit {
-        font-size: 13px !important;
-        font-weight: 700 !important;
-        color: #ffffff !important;
-        text-transform: uppercase !important;
-        letter-spacing: 1.5px !important;
-        margin: 0 !important;
+    .advantage-text {
+        color: #555;
+        font-size: 15px;
+        line-height: 1.8;
+        margin: 0;
+    } */
+    .section-badge {
+    display: inline-flex;
+    align-items: center;
+    background: #F0F5FF; /* Xanh pastel siêu nhạt */
+    color: #3B82F6;
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px; /* Đẩy tiêu đề xuống không cho dính vào nhau */
     }
 
-    .hb-premium-right {
-        flex-grow: 1;
-        padding: 18px 50px 18px 20px;
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1E293B; /* Xanh đen sẫm chuẩn gốc */
+        margin-bottom: 15px;
+        display: block; /* Ép xuống dòng */
+    }
+
+    .section-subtitle {
+        max-width: 650px;
+        margin: 0 auto 40px auto; /* Tăng khoảng cách với các thẻ ở dưới */
+        color: #64748B;
+        font-size: 1rem;
+        line-height: 1.6;
+    }
+
+    /* 2. Thiết lập bộ đếm số tự động cho thẻ */
+    .advantages-section {
+        counter-reset: card-counter; /* Khởi tạo bộ đếm số thứ tự */
+    }
+
+    .advantage-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 35px 28px;
+        text-align: left; /* Trả về căn trái đúng ảnh gốc */
+        border: 1px solid #F1F5F9;
+        position: relative;
+        overflow: hidden;
+        height: 100%;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02); 
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        counter-increment: card-counter; /* Tự động tăng số đếm (1, 2, 3...) */
+        z-index: 1;
     }
 
-    .hb-premium-title {
-        font-size: 18px !important;
-        font-weight: 800 !important;
-        color: #ffffff !important;
-        text-transform: uppercase !important;
-        margin: 0 0 4px 0 !important;
-        letter-spacing: 0.5px !important;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-    }
-
-    .hb-premium-desc {
-        font-size: 14px !important;
-        font-style: italic !important;
-        color: rgba(255, 255, 255, 0.9) !important;
-        margin: 0 !important;
-    }
-
-    .hb-premium-icon {
+    /* Tự động in số thứ tự 01, 02 siêu to chìm ở góc phải */
+    .advantage-card::before {
+        content: "0" counter(card-counter); /* Thêm số 0 đằng trước */
         position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 24px;
-        color: rgba(255,255,255,0.4);
-        transition: right 0.3s ease, color 0.3s ease;
-    }
-
-    .hb-premium-card:hover .hb-premium-icon {
-        right: 15px;
-        color: rgba(255,255,255,0.8);
-    }
-
-    /* MOBILE CSS */
-    @@media (max-width: 768px) {
-        .section-title {
-            font-size: 30px;
-        }
-
-        .section-subtitle {
-            font-size: 15px;
-        }
-
-        .advantage-card {
-            padding: 28px 20px;
-        }
-
-        .advantage-icon {
-            width: 75px;
-            height: 75px;
-            font-size: 28px;
-        }
-        /* =======================================================
-           HỌA TIẾT PHONG CẢNH HÀN QUỐC (KOREAN LANDSCAPE DIVIDER)
-           ======================================================= */
-        .korean-landscape-divider {
-            width: 100vw;
-            height: 180px; /* Độ cao của dải phong cảnh */
-            position: relative;
-            left: 50%;
-            right: 50%;
-            margin-left: -50vw;
-            margin-right: -50vw;
-            margin-top: 60px;
-            margin-bottom: 20px;
-            background-image: url('/images/korean-landscape.png');
-            background-position: bottom center;
-            background-repeat: repeat-x;
-            background-size: auto 100%;
-            z-index: 1;
-        }
-
-        @@media (max-width: 768px) {
-            .korean-landscape-divider {
-                height: 100px;
-                margin-top: 40px;
-            }
-        }
+        top: 25px;
+        right: 25px;
+        font-size: 4rem; /* Cỡ chữ to khổng lồ */
+        font-weight: 800;
+        color: #F8FAFC; /* Màu xám siêu nhạt tàng hình */
+        z-index: -1; /* Ép chìm xuống dưới chữ */
+        line-height: 1;
+        display: block;
+        background: transparent; /* Xóa dải màu đỏ gắt ở phiên bản trước */
+        height: auto;
+        width: auto;
     }
 
     .advantage-card:hover {
-        border-bottom: 4px solid var(--hover-color, #c62828);
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px rgba(10, 37, 64, 0.08);
+        border-color: rgba(67, 56, 202, 0.2); /* Viền ánh tím nhẹ khi hover */
     }
 
-        .advantage-card:hover .advantage-icon {
-            background-color: var(--hover-color, #c62828) !important;
-            color: #fff !important;
-        }
+    /* 3. Sửa lại màu Icon sang tone Tím/Xanh chuẩn ảnh gốc */
+    .advantage-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 24px;
+        background-color: #EEF2FF !important; /* Tím pastel dịu mắt */
+        color: #4F46E5 !important; /* Icon tím/xanh đậm */
+        transition: all 0.3s ease;
+        box-shadow: none;
+    }
+
+    /* Luân phiên đổi màu nền icon thành Hồng pastel nhẹ để giống ảnh gốc nhất */
+    .advantage-card:nth-child(even) .advantage-icon {
+        background-color: #FFF1F2 !important; 
+        color: #E11D48 !important;
+    }
+
+    .advantage-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: #1E293B;
+        margin-bottom: 12px;
+        position: relative;
+        padding-bottom: 8px;
+        min-height: auto;
+    }
+
+    /* Gạch dưới tiêu đề */
+    .advantage-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 24px;
+        height: 2px;
+        background-color: #E2E8F0;
+        transition: all 0.3s ease;
+    }
+
+    .advantage-card:hover .advantage-title::after {
+        background-color: #4F46E5; /* Khi hover gạch dưới chuyển màu tím */
+        width: 40px;
+    }
+
+    .advantage-text {
+        color: #475569;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    /*Thêm*/
+   
+    .advantages-section {
+    position: relative; 
+    padding: 80px 0;
+    background-color: #F8FAFC; /* Màu nền nhạt cho toàn khu vực */
+    z-index: 1;
+    overflow: hidden; /* Giúp cành hoa không bị tràn ra ngoài khung web */
+}
+
+    /* Lớp phủ chứa cành hoa đào */
+    .advantages-section::before {
+        content: "";
+        position: absolute;
+        top: -10px;        /* Sát mép trên (có thể chỉnh âm để giấu bớt cành góc) */
+        left: -10px;       /* Sát mép trái */
+        width: 400px;      /* Độ rộng hiển thị của cành hoa, tăng giảm tùy ý */
+        height: 400px;
+   
+        background-image: url('/images/phongnen/hoa_anh_dao.png'); 
+    
+        background-size: contain; 
+        background-position: left top; /* Canh sát góc trái trên cùng */
+        background-repeat: no-repeat;
+    
+        /* Vì hoa nằm ở góc thoáng, bạn có thể để rõ nét một chút cho đẹp */
+        opacity: 0.85; 
+    
+        z-index: -1;       /* Nằm dưới các ô nội dung để không che chữ */
+        pointer-events: none; /* Tránh việc người dùng vô tình click nhầm vào ảnh */
+    }
+
+    /* Thanh vách ngăn bông hoa ở Tiêu đề phụ (Giữ lại cho đẹp giống bản gốc) */
+    .section-subtitle {
+        position: relative;
+        padding-bottom: 30px; 
+    }
+
+    .section-subtitle::after {
+        content: "✿"; 
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+        color: #93C5FD; 
+    }
+
+    .section-subtitle::before {
+        content: "";
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 1px;
+        background-color: #E2E8F0;
+        z-index: -1;
+    }
+
+    /* MOBILE đã chuyển qua file site.css để dễ quản lý và sửa */ 
+  
+/* 
+    {
+        .section-title
+
+    {
+        font-size: 30px;
+    }
+
+    .section-subtitle {
+        font-size: 15px;
+    }
+
+    .advantage-card {
+        padding: 28px 20px;
+    }
+
+    .advantage-icon {
+        width: 75px;
+        height: 75px;
+        font-size: 28px;
+    }
+
+    } */
+
 </style>
 
 <div id="vluHeroCarousel" class="carousel slide vlu-hero-carousel" data-bs-ride="carousel" data-bs-interval="2000" data-bs-pause="false">
@@ -744,172 +1247,145 @@
         </div>
     </section>
 
-    @{
+     @{
+        // 1. LẤY TOÀN BỘ DANH SÁCH HỌC PHÍ, KHÔNG PHÂN CHIA HỆ CỬ NHÂN / KỸ SƯ NỮA
         var allHocPhi = ViewBag.DanhSachHocPhi as List<VKITActivityManager.Models.HocPhi> ?? new List<VKITActivityManager.Models.HocPhi>();
-
-        var listCuNhan = allHocPhi.Where(x => x.HeDaoTao != "KS").ToList();
-        var listKySu = allHocPhi.Where(x => x.HeDaoTao == "KS").ToList();
+    
+        // 2. GOM NHÓM LẠI THEO NGÀNH VÀ THỜI GIAN HỌC
+        var groups = allHocPhi.GroupBy(x => new { x.NganhDaoTao, x.ThoiGian }).ToList();
     }
 
     <div class="tuition-section">
-        <h2 class="fw-bold text-center tuition-title mb-4">
+        <!-- Tiêu đề vùng học phí giữ nguyên -->
+        <h2 class="fw-bold text-center tuition-title mb-5">
             HỌC PHÍ THAM KHẢO NĂM 2025 VÀ<br />ĐƯỢC TÍNH THEO CHƯƠNG TRÌNH ĐÀO TẠO CHUẨN
         </h2>
 
-        <div class="tuition-tabs-container">
-            <ul class="nav nav-pills tuition-tabs" id="tuitionTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="cunhan-tab" data-bs-toggle="tab" data-bs-target="#cunhan" type="button" role="tab">
-                        <i class="fas fa-user-graduate me-2"></i> Hệ Cử Nhân
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="kysu-tab" data-bs-toggle="tab" data-bs-target="#kysu" type="button" role="tab">
-                        <i class="fas fa-microchip me-2"></i> Hệ Kỹ Sư
-                    </button>
-                </li>
-            </ul>
-        </div>
-
-        <div class="tab-content" id="tuitionTabContent">
-            <div class="tab-pane fade show active" id="cunhan" role="tabpanel">
-                <div class="tuition-wrapper animate__animated animate__fadeIn">
-                    <div class="table-responsive">
-                        <table class="table table-bordered tuition-table text-center mb-0" style="min-width: 800px;">
-                            <thead>
-                                <tr>
-                                    <th width="20%">Ngành đào tạo</th>
-                                    <th width="15%">Đơn vị áp dụng</th>
-                                    <th width="20%">Học phí<br />(VNĐ)</th>
-                                    <th width="22%">Học phí sau học bổng 25%<br />(VNĐ)</th>
-                                    <th width="23%">Học phí sau học bổng 50%<br />(VNĐ)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center align-middle">
-                                @if (listCuNhan.Any())
-                                {
-                                    var groups = listCuNhan.GroupBy(x => new { x.NganhDaoTao, x.ThoiGian }).ToList();
-                                    foreach (var group in groups)
-                                    {
-                                        var items = group.ToList();
-                                        for (int i = 0; i < items.Count; i++)
-                                        {
-                                            <tr class="@(items[i].LaDongPhu ? "bg-light-red" : "")">
-                                                @if (i == 0)
-                                                {
-                                                    <td rowspan="@items.Count" class="text-dark-blue fw-bold text-start ps-3">
-                                                        @group.Key.NganhDaoTao<br />
-                                                        <span class="small text-muted fw-normal">(@group.Key.ThoiGian)</span>
-                                                    </td>
-                                                }
-                                                <td class="text-dark-blue fw-bold">@items[i].DonViApDung</td>
-                                                <td class="text-blue fw-bold">@items[i].MucHocPhi</td>
-                                                <td class="text-red fw-bold">@items[i].HocPhiGiam25</td>
-                                                <td class="text-red fw-bold">@items[i].HocPhiGiam50</td>
-                                            </tr>
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    <tr><td colspan="5" class="py-4 text-muted fst-italic">Chưa có thông tin học phí hệ Cử nhân.</td></tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="kysu" role="tabpanel">
-                <div class="tuition-wrapper animate__animated animate__fadeIn">
-                    <div class="table-responsive">
-                        <table class="table table-bordered tuition-table text-center mb-0" style="min-width: 800px;">
-                            <thead>
-                                <tr>
-                                    <th width="20%">Ngành đào tạo</th>
-                                    <th width="15%">Đơn vị áp dụng</th>
-                                    <th width="20%">Học phí<br />(VNĐ)</th>
-                                    <th width="22%">Học phí sau học bổng 25%<br />(VNĐ)</th>
-                                    <th width="23%">Học phí sau học bổng 50%<br />(VNĐ)</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-center align-middle">
-                                @if (listKySu.Any())
-                                {
-                                    var groups = listKySu.GroupBy(x => new { x.NganhDaoTao, x.ThoiGian }).ToList();
-                                    foreach (var group in groups)
-                                    {
-                                        var items = group.ToList();
-                                        for (int i = 0; i < items.Count; i++)
-                                        {
-                                            <tr class="@(items[i].LaDongPhu ? "bg-light-red" : "")">
-                                                @if (i == 0)
-                                                {
-                                                    <td rowspan="@items.Count" class="text-dark-blue fw-bold text-start ps-3">
-                                                        @group.Key.NganhDaoTao<br />
-                                                        <span class="small text-muted fw-normal">(@group.Key.ThoiGian)</span>
-                                                    </td>
-                                                }
-                                                <td class="text-dark-blue fw-bold">@items[i].DonViApDung</td>
-                                                <td class="text-blue fw-bold">@items[i].MucHocPhi</td>
-                                                <td class="text-red fw-bold">@items[i].HocPhiGiam25</td>
-                                                <td class="text-red fw-bold">@items[i].HocPhiGiam50</td>
-                                            </tr>
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    <tr><td colspan="5" class="py-4 text-muted fst-italic">Chưa có thông tin học phí hệ Kỹ sư.</td></tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3 mt-5">
-        <h2 class="fw-bold m-0" style="color: #1a237e; border-left: 5px solid #f8ca00; padding-left: 15px;">Các Loại Học Bổng Hiện Hành</h2>
-    </div>
-
-    <div class="row justify-content-center mb-5">
-        <div class="col-lg-10">
-            @if (ViewBag.DanhSachLoaiHocBong != null)
-            {
-                var dsLoaiHB = (List<VKITActivityManager.Models.LoaiHocBong>)ViewBag.DanhSachLoaiHocBong;
-
-                foreach (var item in dsLoaiHB)
+        @if (groups.Any())
+        {
+            <!-- Danh sách các Ngành dạng Xổ xuống (Bootstrap Accordion) -->
+            <div class="accordion shadow-sm" id="accordionHocPhi" style="border-radius: 12px; overflow: hidden;">
+                @{ int idx = 0; }
+                @foreach (var group in groups)
                 {
-                    string cardColor = !string.IsNullOrEmpty(item.MauNen) ? item.MauNen : "#4a72d4";
+                    var collapseId = "collapse_" + idx;
+                    var headingId = "heading_" + idx;
+                    var items = group.ToList();
 
-                    <div class="hb-premium-card" style="--hb-color: @cardColor;" onclick="window.location.href='@Url.Action("DanhSachSinhVienHocBong", "Home", new { id = item.Id })'">
+                    <div class="accordion-item border-0 border-bottom">
+                    
+                        <!-- BƯỚC 1: CHỈ HIỆN TÊN NGÀNH VÀ THỜI GIAN HỌC (Luôn hiển thị) -->
+                        <h2 class="accordion-header" id="@headingId">
+                            <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#@collapseId" aria-expanded="false" aria-controls="@collapseId" style="font-size: 1.1rem; color: #1a237e; background-color: #f8fafc;">
+                                <i class="fas fa-graduation-cap me-2"></i> @group.Key.NganhDaoTao
+                                <span class="badge bg-secondary ms-3" style="font-size: 0.8rem; font-weight: normal;">
+                                    Thời gian học: @group.Key.ThoiGian
+                                </span>
+                            </button>
+                        </h2>
 
-                        <div class="hb-premium-left">
-                            <span class="hb-premium-num">
-                                @(item.SoSuat < 10 ? "0" + item.SoSuat : item.SoSuat.ToString())
-                            </span>
-                            <span class="hb-premium-unit">SUẤT</span>
+                        <!-- BƯỚC 2: CLICK VÀO SẼ HIỆN RA GIAO DIỆN BẢNG CHI TIẾT HỌC PHÍ -->
+                        <div id="@collapseId" class="accordion-collapse collapse" aria-labelledby="@headingId" data-bs-parent="#accordionHocPhi">
+                            <div class="accordion-body p-4 bg-white">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered text-center align-middle mb-0">
+                                        <thead style="background-color: #1a237e; color: white;">
+                                            <tr>
+                                                <th width="25%">Đơn vị áp dụng</th>
+                                                <th width="25%">Học phí<br />(VNĐ)</th>
+                                                <th width="25%">Học phí sau học bổng 25%<br />(VNĐ)</th>
+                                                <th width="25%">Học phí sau học bổng 50%<br />(VNĐ)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in items)
+                                            {
+                                                <tr class="@(item.LaDongPhu ? "bg-light-red" : "")">
+                                                    <td class="text-dark-blue fw-bold">@item.DonViApDung</td>
+                                                    <td class="text-blue fw-bold">@item.MucHocPhi</td>
+                                                    <td class="text-red fw-bold">@item.HocPhiGiam25</td>
+                                                    <td class="text-red fw-bold">@item.HocPhiGiam50</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="hb-premium-right">
-                            <h4 class="hb-premium-title">
-                                @item.TenHocBong
-                            </h4>
-                            @if (!string.IsNullOrEmpty(item.MoTa))
-                            {
-                                <p class="hb-premium-desc">
-                                    @item.MoTa
-                                </p>
-                            }
-                        </div>
-
-                        <i class="fas fa-chevron-right hb-premium-icon"></i>
                     </div>
+                    idx++;
                 }
-            }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5 text-muted fst-italic card shadow-sm border-0">
+                Chưa có thông tin học phí các ngành đào tạo.
+            </div>
+        }
+    </div>
+
+
+    <div class="vkit-scholarship-section py-5 my-4">
+        <div class="container">
+            <div class="d-flex align-items-center justify-content-between mb-5 position-relative">
+                <div class="title-wrapper">
+                    <span class="text-uppercase fw-bold text-primary tracking-wider small d-block mb-1" style="letter-spacing: 2px; color: #4f46e5 !important;">VKIT SCHOLARSHIP FUND</span>
+                    <h2 class="fw-black m-0" style="color: #0f172a; font-weight: 800; font-size: 2rem;">
+                        Các Loại Học Bổng Hiện Hành Năm 2025
+                    </h2>
+                </div>
+                <div class="title-line d-none d-md-block flex-grow-1 mx-4" style="height: 1px; background: linear-gradient(90deg, #e2e8f0, transparent);"></div>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                @if (ViewBag.DanhSachLoaiHocBong != null)
+                {
+                    var dsLoaiHB = (List<VKITActivityManager.Models.LoaiHocBong>)ViewBag.DanhSachLoaiHocBong;
+
+                    foreach (var item in dsLoaiHB)
+                    {
+                        string cardColor = !string.IsNullOrEmpty(item.MauNen) ? item.MauNen : "#4a72d4";
+
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 kor-scholarship-card position-relative" 
+                                 style="--hb-color: @cardColor;"
+                                 onclick="window.location.href='@Url.Action("DanhSachSinhVienHocBong", "Home", new { id = item.Id })'">
+                            
+                                <div class="card-color-bar" style="background: linear-gradient(135deg, var(--hb-color), #ffffff);"></div>
+                            
+                                <div class="card-body p-4 d-flex flex-column justify-content-between position-relative z-1">
+                                    <div>
+                                        <div class="d-flex align-items-center justify-content-between mb-4">
+                                            <div class="kor-badge" style="background-color: var(--hb-color);">
+                                                <i class="fas fa-award me-1"></i>
+                                                @(item.SoSuat < 10 ? "0" + item.SoSuat : item.SoSuat.ToString()) SUẤT
+                                            </div>
+                                        </div>
+
+                                        <h4 class="card-title fw-bold text-dark mb-3 kor-card-title">@item.TenHocBong</h4>
+                                        <div class="w-25 my-3" style="height: 2px; background-color: var(--hb-color); opacity: 0.3;"></div>
+
+                                        @if (!string.IsNullOrEmpty(item.MoTa))
+                                        {
+                                            <p class="card-text text-muted small kor-card-desc mb-4">@item.MoTa</p>
+                                        }
+                                    </div>
+
+                                    <div class="pt-2">
+                                        <div class="btn w-100 fw-bold d-flex align-items-center justify-content-center kor-btn-submit" 
+                                             style="--btn-color: var(--hb-color);">
+                                            <span>Xem danh sách vinh danh</span>
+                                            <i class="fas fa-arrow-right ms-2 kor-arrow"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
         </div>
     </div>
 
@@ -1012,47 +1488,61 @@
         </div>
     }
 
-    <div class="training-section shadow-sm mb-5">
-        <div class="row">
-            <div class="col-lg-4 mb-5 mb-lg-0 pe-lg-4">
-                <h2 class="fw-bold mb-4 training-title">Các Ngành &<br /> Khối đào tạo</h2>
-                <p class="text-muted mb-4" style="line-height: 1.7; text-align: justify;">VKIT hiện có nhiều khối ngành đào tạo với các chuyên ngành công nghệ và ngôn ngữ khác nhau, trong đó bao gồm nhiều ngành nghề đang được xã hội quan tâm nhất. Chương trình học được thiết kế theo chuẩn quốc tế.</p>
-            </div>
-            <div class="col-lg-8 border-start-lg ps-lg-4">
-                <div class="row g-4">
-                    <div class="col-md-6 col-lg-4">
-                        <div class="d-flex align-items-start"><i class="fas fa-microchip fs-4 text-danger me-3 mt-1"></i><h5 class="fw-bold category-title mb-0">Khối ngành kỹ thuật</h5></div>
-                        <ul class="list-unstyled faculty-list">
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="1">Công nghệ Thông tin</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="2">Công nghệ Kỹ thuật Ô tô</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="3">Công nghệ Ô Tô Điện</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="d-flex align-items-start"><i class="fas fa-chart-line fs-4 text-danger me-3 mt-1"></i><h5 class="fw-bold category-title mb-0">Khối ngành Kinh tế</h5></div>
-                        <ul class="list-unstyled faculty-list">
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="4">Quản trị Kinh doanh</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="5">Kinh doanh Quốc tế</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="6">Marketting</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="7">Digital Marketting</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="8">Logistics & QLCCU</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="9">Tài chính - Ngân Hàng</a></li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6 col-lg-4">
-                        <div class="d-flex align-items-start"><i class="fas fa-globe fs-4 text-danger me-3 mt-1"></i><h5 class="fw-bold category-title mb-0">Khối ngành Xã hội</h5></div>
-                        <ul class="list-unstyled faculty-list">
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="10">Quan hệ Công chúng</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="11">Quản trị Khách sạn</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="12">Quản trị Du lịch & Lữ hành</a></li>
-                            <li><a asp-controller="Home" asp-action="DanhSachHoatDongNganh" asp-route-id="13">Ngôn ngữ Hàn Quốc</a></li>
-                        </ul>
+   <div class="container my-5">
+        <div class="card border-0 shadow-sm p-5" style="border-radius: 20px; background-color: #f8fafc;">
+            <div class="row g-4">
+            
+                <div class="col-12 col-lg-4 pe-lg-4">
+                    <h2 class="fw-bold text-dark-blue mb-3" style="font-size: 2rem; color: #1a237e;">
+                        Các Ngành &<br />Khối đào tạo
+                    </h2>
+                    <p class="text-muted" style="line-height: 1.6; text-align: justify;">
+                        VKIT hiện có nhiều khối ngành đào tạo với các chuyên ngành công nghệ và ngôn ngữ khác nhau, 
+                        trong đó bao gồm nhiều ngành nghề đang được xã hội quan tâm nhất. Chương trình học được thiết kế 
+                        theo chuẩn quốc tế.
+                    </p>
+                </div>
+
+                <div class="col-12 col-lg-8">
+                    <div class="row g-4">
+                    
+                        <div class="col-12 col-md-4">
+                            <h5 class="fw-bold mb-3 d-flex align-items-center" style="color: #1a237e;">
+                                <i class="fas fa-cpu text-danger me-2"></i> Khối ngành kỹ thuật
+                            </h5>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Công nghệ Thông tin</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Công nghệ Kỹ thuật Ô tô</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Công nghệ Ô Tô Điện</div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <h5 class="fw-bold mb-3 d-flex align-items-center" style="color: #1a237e;">
+                                <i class="fas fa-chart-line text-danger me-2"></i> Khối ngành Kinh tế
+                            </h5>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Quản trị Kinh doanh</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Kinh doanh Quốc tế</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Marketing</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Digital Marketing</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Logistics & QLCCU</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Tài chính - Ngân hàng</div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
+                            <h5 class="fw-bold mb-3 d-flex align-items-center" style="color: #1a237e;">
+                                <i class="fas fa-globe text-danger me-2"></i> Khối ngành Xã hội
+                            </h5>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Quan hệ Công chúng</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Quản trị Khách sạn</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Quản trị Du lịch & Lữ hành</div>
+                            <div class="text-secondary py-1" style="font-size: 0.95rem;">Ngôn ngữ Hàn Quốc</div>
+                        </div>
+
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
-</div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
