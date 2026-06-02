@@ -24,7 +24,12 @@ namespace VKITActivityManager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var data = await _context.DanhSachHoatDong.OrderByDescending(x => x.NgayTao).ToListAsync();
+            // ĐÃ SỬA: Loại trừ PhanLoai == 1 (Tin tức) và PhanLoai == 2 (Video)
+            var data = await _context.DanhSachHoatDong
+                .Where(x => x.PhanLoai != 1 && x.PhanLoai != 2)
+                .OrderByDescending(x => x.NgayTao)
+                .ToListAsync();
+
             ViewBag.DanhSachHocPhi = await _context.DanhSachHocPhi.ToListAsync();
 
             // HOẠT ĐỘNG CHUYÊN NGÀNH
@@ -32,13 +37,21 @@ namespace VKITActivityManager.Controllers
                 .Include(x => x.ChuyenNganh)
                 .OrderByDescending(x => x.NgayTao)
                 .ToListAsync();
+
+            ViewBag.DanhSachSVHB = await _context.SinhVienHocBongs
+                .Include(s => s.LoaiHocBong)
+                .OrderByDescending(s => s.NgayNhan)
+                .ToListAsync();
+
+            ViewBag.DanhSachLoaiHB = await _context.LoaiHocBongs.OrderByDescending(x => x.Id).ToListAsync();
+
             return View(data);
         }
 
         [HttpGet]
         public IActionResult Create(int? type)
         {
-            var model = new HoatDong { PhanLoai = type ?? 1 };
+            var model = new HoatDong { PhanLoai = type ?? 3 }; // Sửa mặc định thành 3 (Banner) thay vì 1 (Tin Tức)
             return View(model);
         }
 
@@ -50,9 +63,20 @@ namespace VKITActivityManager.Controllers
             // Bỏ qua kiểm tra fileAnh trong ModelState vì ta xử lý thủ công
             ModelState.Remove("fileAnh");
 
+            // THÊM ĐOẠN NÀY ĐỂ TRỊ BỆNH CHO BANNER
+            if (hoatDong.PhanLoai == 3)
+            {
+                ModelState.Remove("TieuDe");
+                ModelState.Remove("NoiDung");
+
+                // Tự động gán dữ liệu rác vào để thỏa mãn yêu cầu của Database (nếu DB yêu cầu NOT NULL)
+                hoatDong.TieuDe = "Banner Slider " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                hoatDong.NoiDung = "Nội dung hình ảnh Banner";
+            }
+
             if (ModelState.IsValid)
             {
-                // Xử lý ảnh
+                // Xử lý ảnh... (Giữ nguyên code bên trong của bạn)
                 if (fileAnh != null && fileAnh.Length > 0)
                 {
                     string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "hoatdong");
@@ -73,7 +97,6 @@ namespace VKITActivityManager.Controllers
             }
             return View(hoatDong);
         }
-
         [HttpGet]
         public async Task<IActionResult> Edit(int? id)
         {
@@ -90,26 +113,24 @@ namespace VKITActivityManager.Controllers
             if (id != hoatDong.Id) return NotFound();
             ModelState.Remove("fileAnh");
 
+            // THÊM ĐOẠN NÀY ĐỂ TRỊ BỆNH CHO BANNER
+            if (hoatDong.PhanLoai == 3)
+            {
+                ModelState.Remove("TieuDe");
+                ModelState.Remove("NoiDung");
+                hoatDong.TieuDe = "Banner Slider " + DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+                hoatDong.NoiDung = "Nội dung hình ảnh Banner";
+            }
+
             if (ModelState.IsValid)
             {
+                // Giữ nguyên đoạn code cập nhật bên trong của bạn...
                 var hoatDongDb = await _context.DanhSachHoatDong.FindAsync(id);
                 if (hoatDongDb == null) return NotFound();
 
                 // CẬP NHẬT ĐẦY ĐỦ CÁC TRƯỜNG DỮ LIỆU
                 hoatDongDb.TieuDe = hoatDong.TieuDe;
-                hoatDongDb.TieuDe2 = hoatDong.TieuDe2;
-                hoatDongDb.MoTaNgan = hoatDong.MoTaNgan;
-                hoatDongDb.NoiDung = hoatDong.NoiDung;
-                hoatDongDb.PhanLoai = hoatDong.PhanLoai; // CHẤP NHẬN PHÂN LOẠI MỚI TỪ FORM
-                hoatDongDb.DuongDanVideo = hoatDong.DuongDanVideo;
-
-                if (fileAnh != null && fileAnh.Length > 0)
-                {
-                    string uploadFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images", "hoatdong");
-                    string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(fileAnh.FileName);
-                    using (var fileStream = new FileStream(Path.Combine(uploadFolder, uniqueFileName), FileMode.Create)) { await fileAnh.CopyToAsync(fileStream); }
-                    hoatDongDb.DuongDanAnh = "/images/hoatdong/" + uniqueFileName;
-                }
+                // ... Các dòng code dưới giữ nguyên ...
 
                 await _context.SaveChangesAsync();
                 TempData["SuccessMsg"] = "Cập nhật dữ liệu hoàn tất!";
@@ -118,7 +139,6 @@ namespace VKITActivityManager.Controllers
             }
             return View(hoatDong);
         }
-
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
@@ -403,6 +423,248 @@ public IActionResult CreateHocPhi()
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(IndexHDCN), new { nganhId = rNganhId });
+        }
+        // GET: Admin/CreateSVHB
+        public IActionResult CreateSVHB()
+        {
+            ViewBag.LoaiHocBongId = new SelectList(_context.LoaiHocBongs, "Id", "TenHocBong");
+            return View();
+        }
+
+     
+[HttpPost]
+[ValidateAntiForgeryToken]
+[RequestSizeLimit(1073741824)]
+public async Task<IActionResult> CreateSVHB(
+    SinhVienHocBong sv,
+    IFormFile? fileAnh)
+        {
+            ModelState.Remove("LoaiHocBong");
+
+            if (ModelState.IsValid)
+            {
+                // UPLOAD ẢNH
+                if (fileAnh != null && fileAnh.Length > 0)
+                {
+                    string uploadFolder = Path.Combine(
+                        _webHostEnvironment.WebRootPath,
+                        "images",
+                        "sinhvienhocbong"
+                    );
+
+                    // Tạo folder nếu chưa có
+                    if (!Directory.Exists(uploadFolder))
+                    {
+                        Directory.CreateDirectory(uploadFolder);
+                    }
+
+                    // Tạo tên ảnh mới
+                    string fileName =
+                        Guid.NewGuid().ToString()
+                        + Path.GetExtension(fileAnh.FileName);
+
+                    string filePath =
+                        Path.Combine(uploadFolder, fileName);
+
+                    // Lưu file
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await fileAnh.CopyToAsync(stream);
+                    }
+
+                    // Lưu đường dẫn vào DB
+                    sv.HinhAnh =
+                        "/images/sinhvienhocbong/" + fileName;
+                }
+
+                sv.NgayNhan = DateTime.Now;
+
+                _context.SinhVienHocBongs.Add(sv);
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMsg"] =
+                    "Thêm sinh viên thành công!";
+
+                TempData["ActiveTab"] = "svhocbong";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.LoaiHocBongId =
+                new SelectList(
+                    _context.LoaiHocBongs,
+                    "Id",
+                    "TenHocBong",
+                    sv.LoaiHocBongId
+                );
+
+            return View(sv);
+        }
+
+
+        // GET: Admin/EditSVHB/5
+        [HttpGet]
+        public async Task<IActionResult> EditSVHB(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var sv = await _context.SinhVienHocBongs.FindAsync(id);
+            if (sv == null) return NotFound();
+
+            // Truyền danh sách Loại Học Bổng ra Dropdown để Admin có thể đổi loại học bổng nếu chọn nhầm
+            ViewBag.LoaiHocBongId = new SelectList(_context.LoaiHocBongs, "Id", "TenHocBong", sv.LoaiHocBongId);
+            return View(sv);
+        }
+
+        // POST: Admin/EditSVHB/5
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [RequestSizeLimit(1073741824)]
+        public async Task<IActionResult> EditSVHB(int id, SinhVienHocBong sv, IFormFile? fileAnh)
+        {
+            if (id != sv.Id) return NotFound();
+
+            ModelState.Remove("LoaiHocBong");
+            ModelState.Remove("HinhAnh");
+
+            if (ModelState.IsValid)
+            {
+                var data = await _context.SinhVienHocBongs.FindAsync(id);
+
+                if (data == null) return NotFound();
+
+                data.MaSV = sv.MaSV;
+                data.TenSinhVien = sv.TenSinhVien;
+                data.Lop = sv.Lop;
+                data.LoaiHocBongId = sv.LoaiHocBongId;
+
+                if (fileAnh != null && fileAnh.Length > 0)
+                {
+                    string uploadsFolder = Path.Combine(
+                        _webHostEnvironment.WebRootPath,
+                        "images",
+                        "sinhvienhocbong"
+                    );
+
+                    if (!Directory.Exists(uploadsFolder))
+                    {
+                        Directory.CreateDirectory(uploadsFolder);
+                    }
+
+                    string uniqueFileName =
+                        Guid.NewGuid().ToString() +
+                        Path.GetExtension(fileAnh.FileName);
+
+                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await fileAnh.CopyToAsync(fileStream);
+                    }
+
+                    data.HinhAnh = "/images/sinhvienhocbong/" + uniqueFileName;
+                }
+
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMsg"] = "Cập nhật sinh viên thành công!";
+                TempData["ActiveTab"] = "svhocbong";
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewBag.LoaiHocBongId = new SelectList(
+                _context.LoaiHocBongs,
+                "Id",
+                "TenHocBong",
+                sv.LoaiHocBongId
+            );
+
+            return View(sv);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteSVHB(int id)
+        {
+            var sv = await _context.SinhVienHocBongs.FindAsync(id);
+            if (sv != null) { _context.SinhVienHocBongs.Remove(sv); await _context.SaveChangesAsync(); }
+            TempData["ActiveTab"] = "svhocbong";
+            return RedirectToAction(nameof(Index));
+        }
+        // =========================================================================
+        // QUẢN LÝ DANH MỤC "LOẠI HỌC BỔNG" (CÁC THANH MÀU SẮC)
+        // =========================================================================
+
+        // GET: Admin/CreateLoaiHB
+        [HttpGet]
+        public IActionResult CreateLoaiHB()
+        {
+            return View();
+        }
+
+        // POST: Admin/CreateLoaiHB
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateLoaiHB([Bind("Id,TenHocBong,MoTa,SoSuat,MauNen")] LoaiHocBong loaiHB)
+        {
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(loaiHB);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMsg"] = "Thêm Loại Học Bổng mới thành công!";
+                TempData["ActiveTab"] = "loaihocbong";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(loaiHB);
+        }
+
+        // GET: Admin/EditLoaiHB/5
+        [HttpGet]
+        public async Task<IActionResult> EditLoaiHB(int? id)
+        {
+            if (id == null) return NotFound();
+            var loaiHB = await _context.LoaiHocBongs.FindAsync(id);
+            if (loaiHB == null) return NotFound();
+            return View(loaiHB);
+        }
+
+        // POST: Admin/EditLoaiHB/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditLoaiHB(int id, [Bind("Id,TenHocBong,MoTa,SoSuat,MauNen")] LoaiHocBong loaiHB)
+        {
+            if (id != loaiHB.Id) return NotFound();
+
+            // Thêm dòng này để ép hệ thống bỏ qua kiểm tra danh sách sinh viên
+            ModelState.Remove("SinhVienHocBongs");
+            if (id != loaiHB.Id) return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(loaiHB);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMsg"] = "Cập nhật Loại Học Bổng thành công!";
+                TempData["ActiveTab"] = "loaihocbong";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(loaiHB);
+        }
+
+        // POST: Admin/DeleteLoaiHB/5
+        [HttpPost]
+        public async Task<IActionResult> DeleteLoaiHB(int id)
+        {
+            var loaiHB = await _context.LoaiHocBongs.FindAsync(id);
+            if (loaiHB != null)
+            {
+                _context.LoaiHocBongs.Remove(loaiHB);
+                await _context.SaveChangesAsync();
+            }
+            TempData["ActiveTab"] = "loaihocbong";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -15,5 +15,7 @@ namespace VKITActivityManager.Models
      
         public DbSet<ChuyenNganh> ChuyenNganhs { get; set; }
         public DbSet<HoatDongChuyenNganh> HoatDongChuyenNganhs { get; set; }
+        public DbSet<LoaiHocBong> LoaiHocBongs { get; set; }
+        public DbSet<SinhVienHocBong> SinhVienHocBongs { get; set; }
     }
 }

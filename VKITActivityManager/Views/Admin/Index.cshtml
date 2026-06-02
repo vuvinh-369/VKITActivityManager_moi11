@@ -2,17 +2,15 @@
 @{
     ViewData["Title"] = "Quản trị Hệ thống VKIT";
     var bannerImages = Model.Where(x => x.PhanLoai == 3).ToList();
-    var videos = Model.Where(x => x.PhanLoai == 2).ToList();
-    var tinTucs = Model.Where(x => x.PhanLoai == 1).ToList();
     var hocBongs = Model.Where(x => x.PhanLoai == 4).ToList();
     var camNhans = Model.Where(x => x.PhanLoai == 5).ToList();
     var baoChis = Model.Where(x => x.PhanLoai == 6).ToList();
-}
-@{
+
     var allHocPhiAdmin = ViewBag.DanhSachHocPhi as List<VKITActivityManager.Models.HocPhi> ?? new List<VKITActivityManager.Models.HocPhi>();
     var listCuNhanAdmin = allHocPhiAdmin.Where(x => x.HeDaoTao != "KS").ToList();
     var listKySuAdmin = allHocPhiAdmin.Where(x => x.HeDaoTao == "KS").ToList();
 }
+
 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
     <h2 class="fw-bold text-danger m-0"><i class="fas fa-cogs"></i> Bảng điều khiển</h2>
     <div class="d-flex flex-column flex-md-row gap-2 w-100 w-md-auto">
@@ -22,16 +20,22 @@
 
 <ul class="nav nav-pills mb-4 bg-white p-2 shadow-sm rounded flex-column flex-sm-row gap-2" id="adminTabs" role="tablist">
     <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link active fw-bold w-100 py-2" data-bs-toggle="tab" data-bs-target="#tabBanner" type="button"><i class="fas fa-images"></i> Banner</button></li>
-    <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link fw-bold w-100 py-2" data-bs-toggle="tab" data-bs-target="#tabVideo" type="button"><i class="fas fa-video"></i> Video</button></li>
-    <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link fw-bold w-100 py-2" data-bs-toggle="tab" data-bs-target="#tabTinTuc" type="button"><i class="fas fa-newspaper"></i> Tin Tức</button></li>
-    <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link fw-bold w-100 py-2" data-bs-toggle="tab" data-bs-target="#tabHocBong" type="button"><i class="fas fa-graduation-cap"></i> Học bổng</button></li>
+    <li class="nav-item flex-sm-fill text-center" role="presentation">
+        <button class="nav-link fw-bold w-100 py-2 text-dark" data-bs-toggle="tab" data-bs-target="#tabSVHB" type="button" style="background-color: #f1f3f5; border: 1px solid #dee2e6;">
+            <i class="fas fa-award text-success"></i> SV Học Bổng
+        </button>
+    </li>
     <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link fw-bold w-100 py-2 text-info" data-bs-toggle="tab" data-bs-target="#tabCamNhan" type="button"><i class="fas fa-comment-dots"></i> Cảm nhận</button></li>
     <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link fw-bold w-100 py-2 text-primary" data-bs-toggle="tab" data-bs-target="#tabBaoChi" type="button"><i class="fas fa-rss"></i> Báo chí</button></li>
     <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link fw-bold w-100 py-2" data-bs-toggle="tab" data-bs-target="#tabHocPhi" type="button"><i class="fas fa-money-bill-wave"></i> Học phí</button></li>
-
     <li class="nav-item flex-sm-fill text-center" role="presentation">
         <button class="nav-link fw-bold w-100 py-2 text-dark" data-bs-toggle="tab" data-bs-target="#tabHDCN" type="button" style="background-color: #f1f3f5; border: 1px solid #dee2e6;">
             <i class="fas fa-sitemap text-warning"></i> H.Động Ngành
+        </button>
+    </li>
+    <li class="nav-item flex-sm-fill text-center" role="presentation">
+        <button class="nav-link fw-bold w-100 py-2 text-dark" data-bs-toggle="tab" data-bs-target="#tabLoaiHB" type="button" style="background-color: #f1f3f5; border: 1px solid #dee2e6;">
+            <i class="fas fa-list-ul text-primary"></i> Loại Học Bổng
         </button>
     </li>
 </ul>
@@ -60,66 +64,41 @@
         </div>
     </div>
 
-    <div class="tab-pane fade" id="tabVideo" role="tabpanel">
-        <h5 class="text-primary fw-bold mb-3">Danh sách Video</h5>
-        <div class="table-responsive border rounded">
-            <table class="table table-bordered table-hover mb-0" style="min-width: 600px;">
-                <thead class="table-light"><tr><th>Trạng thái</th><th>Tiêu đề Video</th><th>Thao tác</th></tr></thead>
-                <tbody>
-                    @foreach (var item in videos)
-                    {
-                        <tr>
-                            <td width="120" class="text-center align-middle"><span class="badge bg-success">Đã có Video</span></td>
-                            <td class="align-middle fw-bold">@Html.Raw(item.TieuDe)</td>
-                            <td class="align-middle text-center" width="120">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    <div class="tab-pane fade" id="tabSVHB" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-success fw-bold m-0"><i class="fas fa-award"></i> Danh sách Sinh Viên nhận Học Bổng</h5>
+            <a asp-action="CreateSVHB" class="btn btn-sm btn-outline-success fw-bold"><i class="fas fa-plus"></i> Thêm Sinh Viên</a>
         </div>
-    </div>
-
-    <div class="tab-pane fade" id="tabTinTuc" role="tabpanel">
-        <h5 class="text-success fw-bold mb-3">Danh sách Tin tức</h5>
         <div class="table-responsive border rounded">
-            <table class="table table-bordered table-hover mb-0" style="min-width: 600px;">
-                <thead class="table-light"><tr><th>Hình ảnh</th><th>Tiêu đề</th><th>Thao tác</th></tr></thead>
-                <tbody>
-                    @foreach (var item in tinTucs)
+            <table class="table table-bordered table-hover mb-0" style="min-width: 800px;">
+                <thead class="table-light text-center">
+                    <tr><th>Avatar</th><th>Sinh Viên</th><th>Lớp</th><th>Loại Học Bổng</th><th>Ngày nhận</th><th>Thao tác</th></tr>
+                </thead>
+                <tbody class="align-middle text-center">
+                    @if (ViewBag.DanhSachSVHB != null)
                     {
-                        <tr>
-                            <td width="120" class="text-center"><img src="@item.DuongDanAnh" style="height: 60px; max-width: 100px; object-fit:cover; border-radius: 4px;"></td>
-                            <td class="align-middle fw-bold">@Html.Raw(item.TieuDe)</td>
-                            <td class="align-middle text-center" width="120">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></form>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="tab-pane fade" id="tabHocBong" role="tabpanel">
-        <h5 class="text-warning fw-bold mb-3">Danh sách Học bổng</h5>
-        <div class="table-responsive border rounded">
-            <table class="table table-bordered table-hover mb-0" style="min-width: 600px;">
-                <thead class="table-light"><tr><th>Hình ảnh</th><th>Tiêu đề</th><th>Thao tác</th></tr></thead>
-                <tbody>
-                    @foreach (var item in hocBongs)
-                    {
-                        <tr>
-                            <td width="120" class="text-center"><img src="@item.DuongDanAnh" style="height: 60px; max-width: 100px; object-fit:cover; border-radius: 4px;"></td>
-                            <td class="align-middle fw-bold">@Html.Raw(item.TieuDe)</td>
-                            <td class="align-middle text-center" width="120">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></form>
-                            </td>
-                        </tr>
+                        var listSVHB = (List<VKITActivityManager.Models.SinhVienHocBong>)ViewBag.DanhSachSVHB;
+                        if (listSVHB.Any())
+                        {
+                            foreach (var item in listSVHB)
+                            {
+                                <tr>
+                                    <td><img src="@(string.IsNullOrEmpty(item.HinhAnh) ? "/images/default-avatar.png" : item.HinhAnh)" style="width:45px; height:45px; object-fit:cover;" class="rounded-circle border shadow-sm"></td>
+                                    <td><span class="fw-bold text-dark">@item.TenSinhVien</span><br /><span class="small text-muted">@item.MaSV</span></td>
+                                    <td>@item.Lop</td>
+                                    <td><span class="badge" style="background-color: @(item.LoaiHocBong?.MauNen ?? "#555")">@(item.LoaiHocBong?.TenHocBong)</span></td>
+                                    <td class="small text-muted">@item.NgayNhan.ToString("dd/MM/yyyy")</td>
+                                    <td width="120">
+                                        <a asp-action="EditSVHB" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                        <form asp-action="DeleteSVHB" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6" class="py-4 text-muted fst-italic">Chưa có sinh viên nào.</td></tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -232,7 +211,7 @@
                 <thead class="table-light text-center">
                     <tr><th>Ảnh</th><th>Chuyên Ngành</th><th>Tiêu đề chính</th><th>Ngày tạo</th><th>Thao tác</th></tr>
                 </thead>
-                <tbody class="align-middle">
+                <tbody class="align-middle text-center">
                     @if (ViewBag.DanhSachHDCN != null)
                     {
                         var listHDCN = (List<VKITActivityManager.Models.HoatDongChuyenNganh>)ViewBag.DanhSachHDCN;
@@ -241,20 +220,56 @@
                             foreach (var item in listHDCN)
                             {
                                 <tr>
-                                    <td class="text-center">
-                                        <img src="@item.DuongDanAnh" style="width:60px; height:40px; object-fit:cover;" class="rounded border">
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-primary">@(item.ChuyenNganh?.TenNganh)</span>
-                                    </td>
-                                    <td class="fw-bold text-dark">
-                                        @Html.Raw(System.Net.WebUtility.HtmlDecode(item.TieuDe))
-                                    </td>
-                                    <td class="text-center text-muted small">@item.NgayTao.ToString("dd/MM/yyyy")</td>
-                                    <td class="text-center" width="120">
+                                    <td><img src="@item.DuongDanAnh" style="width:60px; height:40px; object-fit:cover;" class="rounded border"></td>
+                                    <td><span class="badge bg-primary">@(item.ChuyenNganh?.TenNganh)</span></td>
+                                    <td class="fw-bold text-dark text-start">@Html.Raw(System.Net.WebUtility.HtmlDecode(item.TieuDe))</td>
+                                    <td class="text-muted small">@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                                    <td width="120">
                                         <a asp-action="EditHDCN" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
-                                        <form asp-action="DeleteHDCN" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);">
-                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                        <form asp-action="DeleteHDCN" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="5" class="py-4 text-muted fst-italic">Chưa có bài viết hoạt động ngành nào.</td></tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="tabLoaiHB" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-primary fw-bold m-0"><i class="fas fa-list-ul"></i> Quản lý Danh mục Loại Học Bổng</h5>
+            <a asp-action="CreateLoaiHB" class="btn btn-sm btn-outline-primary fw-bold"><i class="fas fa-plus"></i> Thêm Loại Mới</a>
+        </div>
+        <div class="table-responsive border rounded">
+            <table class="table table-bordered table-hover mb-0" style="min-width: 800px;">
+                <thead class="table-light text-center">
+                    <tr><th width="8%">Màu sắc</th><th width="45%" class="text-start">Tên Học Bổng</th><th>Số suất</th><th>Mô tả</th><th width="12%">Thao tác</th></tr>
+                </thead>
+                <tbody class="align-middle">
+                    @if (ViewBag.DanhSachLoaiHB != null)
+                    {
+                        var listLHB = (List<VKITActivityManager.Models.LoaiHocBong>)ViewBag.DanhSachLoaiHB;
+                        if (listLHB.Any())
+                        {
+                            foreach (var item in listLHB)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        <div style="width: 40px; height: 40px; border-radius: 8px; background-color: @item.MauNen; margin: 0 auto; box-shadow: 0 2px 5px rgba(0,0,0,0.2);"></div>
+                                        <span class="small text-muted mt-1 d-block">@item.MauNen</span>
+                                    </td>
+                                    <td class="text-start fw-bold" style="color: #1a237e; text-transform: uppercase;">@item.TenHocBong</td>
+                                    <td class="text-center fw-bold text-danger fs-5">@item.SoSuat</td>
+                                    <td class="fst-italic text-muted">@item.MoTa</td>
+                                    <td class="text-center">
+                                        <a asp-action="EditLoaiHB" asp-route-id="@item.Id" class="btn btn-warning btn-sm shadow-sm"><i class="fas fa-edit"></i></a>
+                                        <form asp-action="DeleteLoaiHB" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);">
+                                            <button type="submit" class="btn btn-danger btn-sm shadow-sm"><i class="fas fa-trash"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -262,7 +277,7 @@
                         }
                         else
                         {
-                            <tr><td colspan="5" class="text-center py-4 text-muted fst-italic">Chưa có bài viết hoạt động ngành nào.</td></tr>
+                            <tr><td colspan="5" class="py-4 text-center text-muted fst-italic">Chưa có dữ liệu Loại Học Bổng.</td></tr>
                         }
                     }
                 </tbody>
@@ -280,15 +295,14 @@
         var activeTab = '@TempData["ActiveTab"]';
         if (activeTab) {
             var btnTarget = "";
-            if (activeTab == '1') btnTarget = 'tin tức';
-            else if (activeTab == '2') btnTarget = 'video';
-            else if (activeTab == '3') btnTarget = 'banner';
+            if (activeTab == '3') btnTarget = 'banner';
             else if (activeTab == '4') btnTarget = 'học bổng';
             else if (activeTab == '5') btnTarget = 'cảm nhận';
             else if (activeTab == '6') btnTarget = 'báo chí';
             else if (activeTab == 'hocphi') btnTarget = 'học phí';
-            else if (activeTab == 'hdcn') btnTarget = 'h.động ngành'; // Load lại đúng tab khi thêm/xóa/sửa
-
+            else if (activeTab == 'hdcn') btnTarget = 'h.động ngành';
+            else if (activeTab == 'svhocbong') btnTarget = 'sv học bổng';
+            else if (activeTab == 'loaihocbong') btnTarget = 'loại học bổng';
             if(btnTarget) {
                 var buttons = document.querySelectorAll('button[data-bs-toggle="tab"]');
                 buttons.forEach(function(btn) {

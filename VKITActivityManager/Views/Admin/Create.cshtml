@@ -12,8 +12,6 @@
             <div class="form-group mb-4 p-4 bg-light rounded border shadow-sm">
                 <label asp-for="PhanLoai" class="control-label fw-bold text-danger fs-5 mb-2">Bước 1: Chọn đúng phân loại nội dung quản lý:</label>
                 <select asp-for="PhanLoai" id="selectPhanLoai" class="form-select form-select-lg fw-bold border-danger" onchange="toggleInputs()">
-                    <option value="1">📰 Tin Tức & Sự Kiện</option>
-                    <option value="2">🎥 Video Hoạt Động</option>
                     <option value="3">🖼️ Ảnh Banner Slider</option>
                     <option value="4">🎓 Học Bổng & Ưu Đãi</option>
                     <option value="5">🗣️ Cảm Nhận Sinh Viên</option>
@@ -67,6 +65,7 @@
             </div>
 
         </form>
+        <div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
     </div>
 </div>
 

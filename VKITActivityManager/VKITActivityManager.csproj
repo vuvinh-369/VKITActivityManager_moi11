@@ -14,4 +14,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\sinhvienhocbong\" />
+    <Folder Include="wwwroot\videos\hoatdong\" />
+  </ItemGroup>
+
 </Project>

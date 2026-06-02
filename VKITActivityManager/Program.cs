@@ -3,7 +3,19 @@ using VKITActivityManager.Models;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Options;
 var builder = WebApplication.CreateBuilder(args);
+// 1. Mở rộng giới hạn dung lượng upload lên 500MB cho Kestrel Server
+builder.WebHost.ConfigureKestrel(serverOptions =>
+{
+    serverOptions.Limits.MaxRequestBodySize = 524288000; // 500MB
+});
 
+// 2. Mở rộng giới hạn bộ đọc Form dữ liệu lên 500MB
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+{
+    options.ValueLengthLimit = int.MaxValue;
+    options.MultipartBodyLengthLimit = 524288000; // 500MB
+    options.MultipartHeadersLengthLimit = int.MaxValue;
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -24,7 +36,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // --- THÊM ĐOẠN NÀY ĐỂ MÁY CHỦ KESTREL NHẬN FILE LÊN ĐẾN 200MB ---
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.Limits.MaxRequestBodySize = 1073741824; // 200 MB
+    serverOptions.Limits.MaxRequestBodySize = 524288000; // 200 MB
 });
 var app = builder.Build();
 

@@ -18,26 +18,25 @@ namespace VKITActivityManager.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var data = await _context.DanhSachHoatDong.OrderByDescending(a => a.NgayTao).ToListAsync();
+            // Tối ưu: Loại bỏ truy vấn Tin tức (1) và Video (2)
+            var data = await _context.DanhSachHoatDong
+                .Where(x => x.PhanLoai != 1 && x.PhanLoai != 2)
+                .OrderByDescending(a => a.NgayTao).ToListAsync();
 
             // Lấy danh sách học phí và SẮP XẾP THEO NGÀNH để đảm bảo các dòng cùng ngành nằm cạnh nhau
             ViewBag.DanhSachHocPhi = await _context.DanhSachHocPhi
                                                    .OrderBy(x => x.NganhDaoTao)
                                                    .ToListAsync();
 
+            ViewBag.DanhSachLoaiHocBong = _context.LoaiHocBongs.ToList();
             return View(data);
         }
-        // ==========================================
-        // TÍNH NĂNG XEM CHI TIẾT BÀI VIẾT / TIN TỨC
-        // ==========================================
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null) return NotFound();
-
             var hoatDong = await _context.DanhSachHoatDong.FirstOrDefaultAsync(m => m.Id == id);
-
             if (hoatDong == null) return NotFound();
-
             return View(hoatDong);
         }
 
@@ -51,23 +50,7 @@ namespace VKITActivityManager.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-        /* public IActionResult ChiTietNganh(int id)
-         {
-             // Lấy thông tin ngành từ bảng NganhDaoTaos
-             var nganh = _context.NganhDaoTaos.Find(id);
-             if (nganh == null) return NotFound();
 
-             // SỬ DỤNG ĐÚNG TÊN BẢNG LÀ DanhSachHoatDong (giống dòng 37 của bạn)
-             var hoatDongs = _context.DanhSachHoatDong
-                 .Where(h => h.NganhId == id)
-                 .OrderByDescending(h => h.NgayTao)
-                 .ToList();
-
-             ViewBag.TenNganh = nganh.TenNganh;
-             ViewBag.MoTa = nganh.MoTa;
-
-             return View(hoatDongs);
-         }*/
         // 1. KHI NGƯỜI DÙNG CLICK VÀO NGÀNH (Hiển thị Ảnh 1)
         public IActionResult DanhSachHoatDongNganh(int id)
         {
@@ -92,6 +75,20 @@ namespace VKITActivityManager.Controllers
             if (baiViet == null) return RedirectToAction("Index");
 
             return View(baiViet);
+        }
+
+        public IActionResult DanhSachSinhVienHocBong(int id)
+        {
+            var loaiHB = _context.LoaiHocBongs.Find(id);
+            if (loaiHB == null) return RedirectToAction("Index");
+
+            var danhSachSV = _context.SinhVienHocBongs
+                .Where(x => x.LoaiHocBongId == id)
+                .OrderByDescending(x => x.NgayNhan)
+                .ToList();
+
+            ViewBag.LoaiHocBong = loaiHB;
+            return View(danhSachSV);
         }
     }
 }
