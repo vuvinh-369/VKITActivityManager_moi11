@@ -22,6 +22,8 @@ namespace VKITActivityManager.Models
         // BẢNG QUẢN LÝ ƯU ĐIỂM CHƯƠNG TRÌNH
         public DbSet<UuDiem> UuDiems { get; set; }
         public DbSet<AnhUuDiem> AnhUuDiems { get; set; }
+        // BẢNG QUẢN LÝ CHATBOX FAQ
+        public DbSet<CauHoiThuongGap> CauHoiThuongGaps { get; set; }
         // Ghi đè hàm này để tự động tạo 2 loại Video mặc định cho Admin chọn
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

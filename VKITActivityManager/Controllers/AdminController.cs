@@ -55,7 +55,7 @@ namespace VKITActivityManager.Controllers
                 .Include(v => v.PhanLoaiVideo)
                 .OrderByDescending(v => v.NgayTao)
                 .ToListAsync();
-
+            ViewBag.DanhSachCauHoi = await _context.CauHoiThuongGaps.OrderByDescending(x => x.Id).ToListAsync();
             return View(data);
         }
 
@@ -617,6 +617,76 @@ namespace VKITActivityManager.Controllers
             var anh = await _context.AnhUuDiems.FindAsync(id);
             if (anh != null) { _context.AnhUuDiems.Remove(anh); await _context.SaveChangesAsync(); }
             TempData["ActiveTab"] = "uudiem";
+            return RedirectToAction(nameof(Index));
+        }
+        // =========================================================================
+        // QUẢN LÝ Q&A CHATBOX
+        // =========================================================================
+        [HttpGet]
+        public IActionResult CreateCauHoi() { return View(); }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCauHoi(CauHoiThuongGap model) // Đã đổi tên biến thành "model"
+        {
+            // 1. Xóa sạch mọi bắt lỗi ngầm mặc định của hệ thống
+            ModelState.Clear();
+
+            // 2. Tự gán các giá trị bắt buộc
+            model.NgayTao = DateTime.Now;
+
+            // 3. Tự kiểm tra thủ công
+            if (string.IsNullOrEmpty(model.CauHoi)) ModelState.AddModelError("CauHoi", "Không được để trống câu hỏi.");
+            if (string.IsNullOrEmpty(model.TraLoi)) ModelState.AddModelError("TraLoi", "Không được để trống nội dung trả lời.");
+
+            if (ModelState.IsValid)
+            {
+                _context.CauHoiThuongGaps.Add(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMsg"] = "Thêm câu hỏi thành công!";
+                TempData["ActiveTab"] = "chatbox";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditCauHoi(int? id)
+        {
+            if (id == null) return NotFound();
+            var cauHoi = await _context.CauHoiThuongGaps.FindAsync(id);
+            return cauHoi == null ? NotFound() : View(cauHoi);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCauHoi(int id, CauHoiThuongGap model) // Đã đổi tên biến thành "model"
+        {
+            if (id != model.Id) return NotFound();
+
+            // 1. Xóa sạch mọi bắt lỗi ngầm mặc định của hệ thống
+            ModelState.Clear();
+
+            // 2. Tự kiểm tra thủ công
+            if (string.IsNullOrEmpty(model.CauHoi)) ModelState.AddModelError("CauHoi", "Không được để trống câu hỏi.");
+            if (string.IsNullOrEmpty(model.TraLoi)) ModelState.AddModelError("TraLoi", "Không được để trống nội dung trả lời.");
+
+            if (ModelState.IsValid)
+            {
+                _context.Update(model);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMsg"] = "Cập nhật câu hỏi thành công!";
+                TempData["ActiveTab"] = "chatbox";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCauHoi(int id)
+        {
+            var cauHoi = await _context.CauHoiThuongGaps.FindAsync(id);
+            if (cauHoi != null) { _context.CauHoiThuongGaps.Remove(cauHoi); await _context.SaveChangesAsync(); }
+            TempData["ActiveTab"] = "chatbox";
             return RedirectToAction(nameof(Index));
         }
     }
