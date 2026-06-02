@@ -5,7 +5,22 @@
     var camNhans = Model.Where(x => x.PhanLoai == 5).OrderByDescending(x => x.NgayTao).ToList();
     var baoChis = Model.Where(x => x.PhanLoai == 6).OrderByDescending(x => x.NgayTao).ToList();
 }
+@functions {
+    // Hàm bóc tách ID Video Youtube từ Link bất kỳ
+    public string LấyIdYoutube(string url)
+    {
+        if (string.IsNullOrEmpty(url)) return "";
+        var match = System.Text.RegularExpressions.Regex.Match(url, @"(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*");
+        return match.Success && match.Groups[1].Value.Length == 11 ? match.Groups[1].Value : "";
+    }
+}
+@{
+    var videoLon = ViewBag.VideoLon as VKITActivityManager.Models.Video;
+    var videoNhoList = ViewBag.VideoNho as List<VKITActivityManager.Models.Video> ?? new List<VKITActivityManager.Models.Video>();
 
+    // Lấy ID Youtube cho video lớn (nếu không có thì lấy tạm video nhỏ đầu tiên)
+    string firstVideoId = videoLon != null ? LấyIdYoutube(videoLon.DuongDanVideo) : (videoNhoList.Any() ? LấyIdYoutube(videoNhoList.First().DuongDanVideo) : "");
+}
 <style>
     /* BANNER CSS */
     .vlu-hero-carousel {
@@ -550,6 +565,15 @@
             }
         }
     }
+
+    .advantage-card:hover {
+        border-bottom: 4px solid var(--hover-color, #c62828);
+    }
+
+        .advantage-card:hover .advantage-icon {
+            background-color: var(--hover-color, #c62828) !important;
+            color: #fff !important;
+        }
 </style>
 
 <div id="vluHeroCarousel" class="carousel slide vlu-hero-carousel" data-bs-ride="carousel" data-bs-interval="2000" data-bs-pause="false">
@@ -572,6 +596,116 @@
     <button class="carousel-control-next" type="button" data-bs-target="#vluHeroCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
 </div>
 
+
+@if (!string.IsNullOrEmpty(firstVideoId))
+{
+    <div class="container my-5 pt-2">
+        <div class="video-main-container bg-white p-4 p-md-5 rounded-4 shadow-sm">
+
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="video-player-wrapper position-relative overflow-hidden rounded-4 shadow-sm" style="padding-top: 56.25%; background: #000;">
+                        <iframe class="position-absolute top-0 start-0 w-100 h-100 border-0"
+                                src="https://www.youtube.com/embed/@firstVideoId?rel=0&autoplay=1&mute=1&loop=1&playlist=@firstVideoId"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    @if (videoLon != null)
+                    {
+                        <h3 class="fw-bold mt-4 text-center" style="color: #1a237e; text-transform: uppercase;">@videoLon.MoTaNgan</h3>
+                    }
+                </div>
+            </div>
+
+            <hr class="mb-5 text-muted" style="opacity: 0.15;" />
+
+            <!-- 2. GÓC VIDEO VKIT (CÁC VIDEO NHỎ NẰM NGANG Ở DƯỚI) -->
+            <div class="row g-4">
+                <div class="col-12 mb-2">
+                    <h4 class="fw-bold m-0" style="color: #c62828;"><i class="fab fa-youtube"></i> GÓC VIDEO VKIT</h4>
+                </div>
+
+                @foreach (var v in videoNhoList)
+                {
+                    string yId = LấyIdYoutube(v.DuongDanVideo);
+                    if (!string.IsNullOrEmpty(yId))
+                    {
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <!-- Đưa lệnh onclick lên div bọc ngoài cùng để click vào đâu cũng chạy -->
+                            <div class="position-relative rounded-4 shadow-sm overflow-hidden bg-dark mb-3 video-small-item"
+                                 style="padding-top: 56.25%; cursor: pointer;"
+                                 id="vid-container-@yId"
+                                 onclick="playSmallVideo('@yId')">
+
+                                <!-- Ảnh bìa -->
+                                <img src="https://img.youtube.com/vi/@yId/mqdefault.jpg"
+                                     class="position-absolute top-0 start-0 w-100 h-100 img-thumbnail-vid"
+                                     style="object-fit: cover; transition: transform 0.3s ease;">
+
+                                <!-- Nút Play -->
+                                <div class="position-absolute top-50 start-50 translate-middle text-white d-flex align-items-center justify-content-center play-btn-overlay"
+                                     style="background: rgba(198, 40, 40, 0.9); width: 55px; height: 55px; border-radius: 50%; box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: all 0.3s;">
+                                    <i class="fas fa-play fa-lg ms-1"></i>
+                                </div>
+                            </div>
+
+                            <h6 class="fw-bold text-dark mb-1" style="line-height: 1.4;">@v.MoTaNgan</h6>
+                            <small class="text-muted"><i class="far fa-clock"></i> @v.NgayTao.ToString("dd/MM/yyyy")</small>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SCRIPT & CSS CHO VIDEO NHỎ -->
+    <style>
+        /* Hiệu ứng rê chuột xịn xò cho video nhỏ */
+        .video-small-item:hover .img-thumbnail-vid {
+            transform: scale(1.05);
+        }
+
+        .video-small-item:hover .play-btn-overlay {
+            background: #ff0000 !important;
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+    </style>
+
+    <script>
+        function playSmallVideo(videoId) {
+            var container = document.getElementById('vid-container-' + videoId);
+            if (container) {
+                // Thay thế ảnh bằng Iframe Youtube (có kèm mã autoplay=1 để phát luôn)
+                container.innerHTML = '<iframe class="position-absolute top-0 start-0 w-100 h-100 border-0" ' +
+                                      'src="https://www.youtube.com/embed/' + videoId + '?autoplay=1&rel=0" ' +
+                                      'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ' +
+                                      'allowfullscreen></iframe>';
+            }
+        }
+    </script>
+    <style>
+        .video-item-clickable:hover {
+            background-color: #ffebee !important;
+            transform: translateX(5px);
+        }
+
+        .video-list-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .video-list-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .video-list-scroll::-webkit-scrollbar-thumb {
+            background: #c62828;
+            border-radius: 10px;
+        }
+    </style>
+}
 <div class="container my-5 pt-2">
 
     <section class="advantages-section py-5">
@@ -579,49 +713,33 @@
             <div class="text-center mb-5">
                 <span class="section-badge">
                     <i class="fas fa-star"></i> VKIT ADVANTAGES
-                </span> <h2 class="section-title mt-3"> Ưu Điểm Chương Trình </h2>
+                </span>
+                <h2 class="section-title mt-3"> Ưu Điểm Chương Trình </h2>
                 <p class="section-subtitle"> Chương trình đào tạo chuẩn quốc tế, gắn liền doanh nghiệp và cơ hội phát triển toàn diện cho sinh viên. </p>
-            </div> <div class="row g-4">
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="advantage-card h-100">
-                        <div class="advantage-icon">
-                            <i class="fas fa-users"></i>
+            </div>
+
+            <div class="row g-4">
+                @if (ViewBag.DanhSachUuDiem != null)
+                {
+                    var listUuDiem = (List<VKITActivityManager.Models.UuDiem>)ViewBag.DanhSachUuDiem;
+                    foreach (var item in listUuDiem)
+                    {
+                        string iconColor = string.IsNullOrEmpty(item.MauNen) ? "#c62828" : item.MauNen;
+
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <!-- Click vào thẻ sẽ chuyển hướng sang trang Chi Tiết -->
+                            <a asp-action="ChiTietUuDiem" asp-route-id="@item.Id" class="text-decoration-none text-dark d-block h-100">
+                                <div class="advantage-card h-100" style="--hover-color: @iconColor;">
+                                    <div class="advantage-icon" style="color: @iconColor; background-color: @(iconColor)1A;">
+                                        <i class="@(string.IsNullOrEmpty(item.Icon) ? "fas fa-star" : item.Icon)"></i>
+                                    </div>
+                                    <h4 class="advantage-title">@item.TenUuDiem</h4>
+                                    <p class="advantage-text">@item.NoiDung</p>
+                                </div>
+                            </a>
                         </div>
-                        <h4 class="advantage-title"> Mô hình chuẩn Hàn Quốc </h4> <p class="advantage-text"> Mô hình đào tạo theo tiêu chuẩn các trường đại học Hàn Quốc, quy mô lớp nhỏ (20-30), tăng cường tương tác. </p>
-                    </div>
-                </div> <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="advantage-card h-100">
-                        <div class="advantage-icon"> <i class="fas fa-building"></i> </div> <h4 class="advantage-title"> Trải nghiệm doanh nghiệp </h4>
-                        <p class="advantage-text"> Sinh viên được trải nghiệm doanh nghiệp từ năm 1, có cơ hội việc làm từ năm 2. </p>
-                    </div>
-                </div> <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="advantage-card h-100">
-                        <div class="advantage-icon"> <i class="fas fa-plane-departure"></i> </div>
-                        <h4 class="advantage-title"> Chuyển tiếp du học </h4> <p class="advantage-text"> Được lựa chọn chuyển tiếp để lấy bằng Đại học Hàn Quốc sau 2 năm học tại HUTECH. </p>
-                    </div>
-                </div> <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="advantage-card h-100">
-                        <div class="advantage-icon"> <i class="fas fa-globe-asia"></i> </div>
-                        <h4 class="advantage-title"> Giảng viên quốc tế </h4> <p class="advantage-text"> Giảng viên tốt nghiệp từ các trường đại học Hàn Quốc, các trường đẳng cấp quốc tế. </p>
-                    </div>
-                </div> <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="advantage-card h-100">
-                        <div class="advantage-icon"> <i class="fas fa-wallet"></i> </div>
-                        <h4 class="advantage-title"> Thực tập thu nhập cao </h4> <p class="advantage-text"> Thực tập, làm việc trong các doanh nghiệp tại Hàn Quốc hoặc Việt Nam với mức thu nhập xứng đáng. </p>
-                    </div>
-                </div> <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="advantage-card h-100">
-                        <div class="advantage-icon"> <i class="fas fa-language"></i> </div>
-
-                        <h4 class="advantage-title"> Ngoại khóa miễn phí </h4> <p class="advantage-text"> Ngoài lịch học chính khóa, sinh viên có thể tham gia các lớp học phụ đạo tiếng Hàn và văn hóa Hàn Quốc ngoài giờ miễn phí. </p>
-                    </div>
-                </div> <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="advantage-card h-100">
-                        <div class="advantage-icon"> <i class="fas fa-graduation-cap"></i> </div> <h4 class="advantage-title"> Nhận bằng đại học Hàn </h4>
-
-                        <p class="advantage-text"> Được lựa chọn chuyển tiếp để lấy bằng Đại Học Hàn Quốc sau 2 năm học tại HUTECH.</p>
-                    </div>
-                </div> <div class="col-12 col-sm-6 col-lg-3"> <div class="advantage-card h-100"> <div class="advantage-icon"> <i class="fas fa-book-reader"></i> </div> <h4 class="advantage-title"> Dễ dàng tiếp thu kiến thức </h4> <p class="advantage-text"> Sinh viên vẫn học các môn chuyên ngành bằng tiếng Việt để dễ dàng tiếp thu kiến thức. </p> </div> </div>
+                    }
+                }
             </div>
         </div>
     </section>

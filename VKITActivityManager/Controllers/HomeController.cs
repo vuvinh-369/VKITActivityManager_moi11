@@ -29,6 +29,11 @@ namespace VKITActivityManager.Controllers
                                                    .ToListAsync();
 
             ViewBag.DanhSachLoaiHocBong = _context.LoaiHocBongs.ToList();
+            // ---> THÊM 2 DÒNG NÀY VÀO ĐỂ LẤY VIDEO <---
+            ViewBag.VideoLon = await _context.Videos.Where(v => v.PhanLoaiVideoId == 1).OrderByDescending(v => v.NgayTao).FirstOrDefaultAsync();
+            ViewBag.VideoNho = await _context.Videos.Where(v => v.PhanLoaiVideoId == 2).OrderByDescending(v => v.NgayTao).ToListAsync();
+            // Lấy danh sách Ưu điểm ra mặt tiền
+            ViewBag.DanhSachUuDiem = await _context.UuDiems.ToListAsync();
             return View(data);
         }
 
@@ -89,6 +94,18 @@ namespace VKITActivityManager.Controllers
 
             ViewBag.LoaiHocBong = loaiHB;
             return View(danhSachSV);
+        }
+        // 3. KHI NGƯỜI DÙNG CLICK VÀO THẺ ƯU ĐIỂM Ở TRANG CHỦ
+        public async Task<IActionResult> ChiTietUuDiem(int id)
+        {
+            // Lấy Ưu điểm cùng với toàn bộ Hình ảnh của nó
+            var uuDiem = await _context.UuDiems
+                .Include(u => u.DanhSachHinhAnh)
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (uuDiem == null) return RedirectToAction("Index");
+
+            return View(uuDiem);
         }
     }
 }

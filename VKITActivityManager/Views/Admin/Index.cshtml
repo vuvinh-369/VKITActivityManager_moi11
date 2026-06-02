@@ -20,6 +20,14 @@
 
 <ul class="nav nav-pills mb-4 bg-white p-2 shadow-sm rounded flex-column flex-sm-row gap-2" id="adminTabs" role="tablist">
     <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link active fw-bold w-100 py-2" data-bs-toggle="tab" data-bs-target="#tabBanner" type="button"><i class="fas fa-images"></i> Banner</button></li>
+    <li class="nav-item flex-sm-fill text-center" role="presentation"><button class="nav-link fw-bold w-100 py-2 text-danger" data-bs-toggle="tab" data-bs-target="#tabVideo" type="button"><i class="fas fa-video"></i> Video</button></li>
+
+    <li class="nav-item flex-sm-fill text-center" role="presentation">
+        <button class="nav-link fw-bold w-100 py-2 text-dark" data-bs-toggle="tab" data-bs-target="#tabUuDiem" type="button" style="background-color: #f1f3f5; border: 1px solid #dee2e6;">
+            <i class="fas fa-star text-warning"></i> Ưu Điểm
+        </button>
+    </li>
+
     <li class="nav-item flex-sm-fill text-center" role="presentation">
         <button class="nav-link fw-bold w-100 py-2 text-dark" data-bs-toggle="tab" data-bs-target="#tabSVHB" type="button" style="background-color: #f1f3f5; border: 1px solid #dee2e6;">
             <i class="fas fa-award text-success"></i> SV Học Bổng
@@ -58,6 +66,116 @@
                                 <form asp-action="Delete" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);"><button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button></form>
                             </td>
                         </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabVideo" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-primary fw-bold m-0"><i class="fas fa-video"></i> Danh sách Video</h5>
+            <a asp-action="CreateVideo" class="btn btn-sm btn-outline-primary fw-bold"><i class="fas fa-plus"></i> Thêm Video</a>
+        </div>
+        <div class="table-responsive border rounded">
+            <table class="table table-bordered table-hover mb-0" style="min-width: 800px;">
+                <thead class="table-light text-center">
+                    <tr><th>Phân loại hiển thị</th><th class="text-start">Mô tả / Tiêu đề</th><th>Link Youtube</th><th>Ngày tạo</th><th>Thao tác</th></tr>
+                </thead>
+                <tbody class="align-middle text-center">
+                    @if (ViewBag.DanhSachVideo != null)
+                    {
+                        var listVideos = (List<VKITActivityManager.Models.Video>)ViewBag.DanhSachVideo;
+                        if (listVideos.Any())
+                        {
+                            foreach (var item in listVideos)
+                            {
+                                <tr>
+                                    <td><span class="badge @(item.PhanLoaiVideoId == 1 ? "bg-danger" : "bg-info text-dark")">@(item.PhanLoaiVideo?.TenPhanLoai)</span></td>
+                                    <td class="text-start fw-bold text-dark">@item.MoTaNgan</td>
+                                    <td><a href="@item.DuongDanVideo" target="_blank" class="text-decoration-none"><i class="fab fa-youtube text-danger"></i> Xem Link</a></td>
+                                    <td class="text-muted small">@item.NgayTao.ToString("dd/MM/yyyy")</td>
+                                    <td width="120">
+                                        <a asp-action="EditVideo" asp-route-id="@item.Id" class="btn btn-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                        <form asp-action="DeleteVideo" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);">
+                                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="5" class="py-4 text-muted fst-italic">Chưa có video nào trong hệ thống.</td></tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="tabUuDiem" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="text-warning fw-bold m-0 text-dark"><i class="fas fa-star"></i> Quản lý Ưu Điểm Chương Trình</h5>
+            <a asp-action="CreateUuDiem" class="btn btn-sm btn-outline-warning fw-bold text-dark"><i class="fas fa-plus"></i> Thêm Ưu Điểm</a>
+        </div>
+        <div class="table-responsive border rounded">
+            <table class="table table-bordered table-hover mb-0" style="min-width: 900px;">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th width="5%">Icon</th>
+                        <th width="20%" class="text-start">Tên Ưu Điểm</th>
+                        <th width="30%" class="text-start">Nội dung</th>
+                        <th width="30%" class="text-start">Danh sách Ảnh Chi tiết</th>
+                        <th width="15%">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle">
+                    @if (ViewBag.DanhSachUuDiem != null)
+                    {
+                        var listUuDiem = (List<VKITActivityManager.Models.UuDiem>)ViewBag.DanhSachUuDiem;
+                        if (listUuDiem.Any())
+                        {
+                            foreach (var item in listUuDiem)
+                            {
+                                <tr>
+                                    <td class="text-center fs-4" style="color: @(string.IsNullOrEmpty(item.MauNen) ? "#c62828" : item.MauNen)"><i class="@item.Icon"></i></td>
+                                    <td class="text-start fw-bold text-dark">@item.TenUuDiem</td>
+                                    <td class="text-start small text-muted">@item.NoiDung</td>
+                                    <td class="text-start">
+                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                            @if (item.DanhSachHinhAnh != null && item.DanhSachHinhAnh.Any())
+                                            {
+                                                foreach (var anh in item.DanhSachHinhAnh)
+                                                {
+                                                    <div class="position-relative">
+                                                        <img src="@anh.DuongDanAnh" style="width: 50px; height: 35px; object-fit: cover;" class="rounded border shadow-sm">
+                                                        <form asp-action="DeleteAnhUuDiem" asp-route-id="@anh.Id" method="post" class="position-absolute top-0 start-100 translate-middle" onsubmit="confirmDelete(event, this);">
+                                                            <button type="submit" class="btn btn-danger rounded-circle p-0" style="width: 18px; height: 18px; line-height: 18px; font-size: 10px;"><i class="fas fa-times"></i></button>
+                                                        </form>
+                                                    </div>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="fst-italic small text-muted">Chưa có ảnh chi tiết.</span>
+                                            }
+                                        </div>
+                                        <a asp-action="CreateAnhUuDiem" asp-route-uuDiemId="@item.Id" class="btn btn-sm btn-outline-secondary" style="font-size: 0.75rem;"><i class="fas fa-upload"></i> Thêm ảnh</a>
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-action="EditUuDiem" asp-route-id="@item.Id" class="btn btn-warning btn-sm shadow-sm"><i class="fas fa-edit"></i></a>
+                                        <form asp-action="DeleteUuDiem" asp-route-id="@item.Id" method="post" style="display:inline;" onsubmit="confirmDelete(event, this);">
+                                            <button type="submit" class="btn btn-danger btn-sm shadow-sm"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="5" class="py-4 text-center text-muted fst-italic">Chưa có dữ liệu Ưu Điểm.</td></tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -240,6 +358,7 @@
             </table>
         </div>
     </div>
+
     <div class="tab-pane fade" id="tabLoaiHB" role="tabpanel">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h5 class="text-primary fw-bold m-0"><i class="fas fa-list-ul"></i> Quản lý Danh mục Loại Học Bổng</h5>
@@ -296,6 +415,8 @@
         if (activeTab) {
             var btnTarget = "";
             if (activeTab == '3') btnTarget = 'banner';
+            else if (activeTab == 'video') btnTarget = 'video';
+            else if (activeTab == 'uudiem') btnTarget = 'ưu điểm'; // TRỎ VỀ TAB ƯU ĐIỂM
             else if (activeTab == '4') btnTarget = 'học bổng';
             else if (activeTab == '5') btnTarget = 'cảm nhận';
             else if (activeTab == '6') btnTarget = 'báo chí';

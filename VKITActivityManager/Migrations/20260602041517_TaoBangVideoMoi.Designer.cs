@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VKITActivityManager.Models;
 
@@ -11,9 +12,11 @@ using VKITActivityManager.Models;
 namespace VKITActivityManager.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260602041517_TaoBangVideoMoi")]
+    partial class TaoBangVideoMoi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,35 +24,6 @@ namespace VKITActivityManager.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("VKITActivityManager.Models.AnhUuDiem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DuongDanAnh")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MoTaNgan")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("NgayTao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UuDiemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UuDiemId");
-
-                    b.ToTable("AnhUuDiems");
-                });
 
             modelBuilder.Entity("VKITActivityManager.Models.ChuyenNganh", b =>
                 {
@@ -292,34 +266,6 @@ namespace VKITActivityManager.Migrations
                     b.ToTable("SinhVienHocBong");
                 });
 
-            modelBuilder.Entity("VKITActivityManager.Models.UuDiem", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Icon")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MauNen")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NoiDung")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("TenUuDiem")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UuDiems");
-                });
-
             modelBuilder.Entity("VKITActivityManager.Models.Video", b =>
                 {
                     b.Property<int>("Id")
@@ -348,17 +294,6 @@ namespace VKITActivityManager.Migrations
                     b.HasIndex("PhanLoaiVideoId");
 
                     b.ToTable("Videos");
-                });
-
-            modelBuilder.Entity("VKITActivityManager.Models.AnhUuDiem", b =>
-                {
-                    b.HasOne("VKITActivityManager.Models.UuDiem", "UuDiem")
-                        .WithMany("DanhSachHinhAnh")
-                        .HasForeignKey("UuDiemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UuDiem");
                 });
 
             modelBuilder.Entity("VKITActivityManager.Models.HoatDongChuyenNganh", b =>
@@ -407,11 +342,6 @@ namespace VKITActivityManager.Migrations
             modelBuilder.Entity("VKITActivityManager.Models.PhanLoaiVideo", b =>
                 {
                     b.Navigation("Videos");
-                });
-
-            modelBuilder.Entity("VKITActivityManager.Models.UuDiem", b =>
-                {
-                    b.Navigation("DanhSachHinhAnh");
                 });
 #pragma warning restore 612, 618
         }
