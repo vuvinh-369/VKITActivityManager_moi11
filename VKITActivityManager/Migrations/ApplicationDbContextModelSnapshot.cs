@@ -67,6 +67,9 @@ namespace VKITActivityManager.Migrations
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("PhanLoai")
+                        .HasColumnType("int");
+
                     b.Property<string>("TraLoi")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

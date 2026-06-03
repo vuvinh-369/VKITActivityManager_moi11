@@ -108,9 +108,13 @@ namespace VKITActivityManager.Controllers
             return View(uuDiem);
         }
         [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> GetChatboxData()
         {
-            var data = await _context.CauHoiThuongGaps.OrderBy(x => x.Id).ToListAsync();
+            var data = await _context.CauHoiThuongGaps
+                .OrderBy(x => x.PhanLoai)
+                .ThenBy(x => x.Id)
+                .ToListAsync();
             return Json(data);
         }
     }

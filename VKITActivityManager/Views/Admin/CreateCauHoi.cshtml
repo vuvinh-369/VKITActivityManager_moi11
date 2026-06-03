@@ -12,7 +12,22 @@
             <form asp-action="CreateCauHoi" method="post" onsubmit="tinymce.triggerSave();">
 
                 <div asp-validation-summary="All" class="text-danger fw-bold mb-3"></div>
-
+                <div class="mb-4">
+                    <label asp-for="PhanLoai" class="form-label fw-bold text-dark">Vị trí hiển thị / Ngành đào tạo <span class="text-danger">*</span></label>
+                    <select asp-for="PhanLoai" class="form-select form-select-lg">
+                        <option value="0">Chủ đề chung / Câu hỏi thường gặp</option>
+                        <option value="1">Ngành 1: Công nghệ thông tin</option>
+                        <option value="2">Ngành 2: Công nghệ kỹ thuật ô tô</option>
+                        <option value="3">Ngành 3: Quản trị kinh doanh</option>
+                        <option value="4">Ngành 4: Thiết kế đồ họa</option>
+                        <option value="5">Ngành 5: Ngôn ngữ Anh</option>
+                        <option value="6">Ngành 6: Ngôn ngữ Nhật</option>
+                        <option value="7">Ngành 7: Ngôn ngữ Hàn Quốc</option>
+                        <option value="8">Ngành 8: Logistics & Quản lý chuỗi cung ứng</option>
+                        <option value="9">Ngành 9: Công nghệ kỹ thuật điện, điện tử</option>
+                    </select>
+                    <small class="text-muted">Lựa chọn đúng nhóm để Chatbox phân phối chính xác luồng câu hỏi tự động.</small>
+                </div>
                 <div class="mb-4">
                     <label asp-for="CauHoi" class="form-label fw-bold text-primary">Câu Hỏi của Người dùng <span class="text-danger">*</span></label>
                     <input asp-for="CauHoi" class="form-control form-control-lg" placeholder="VD: Trường có ký túc xá không?" required />

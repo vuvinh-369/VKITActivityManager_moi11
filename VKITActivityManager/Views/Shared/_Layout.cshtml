@@ -107,6 +107,16 @@
                 font-size: 12px;
             }
         }
+
+    
+        .qr-hover-effect {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .qr-hover-effect:hover {
+            transform: scale(1.05);
+        }
+
     </style>
 </head>
 <body>
@@ -193,7 +203,7 @@
 
                     <p class="mb-3">
                         <i class="fas fa-globe me-2 text-primary"></i>Website:
-                        <a href="https://hutech.edu.vn/VKIT" target="_blank" class="text-white text-decoration-none custom-link">
+                        <a href="https://www.hutech.edu.vn/chuong-trinh-viet-han-vkit" target="_blank" class="text-white text-decoration-none custom-link">
                             hutech.edu.vn/VKIT
                         </a>
                     </p>
@@ -222,8 +232,8 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    <div id="vkit-chat-btn" class="position-fixed d-flex align-items-center justify-content-center shadow-lg cursor-pointer"
-         style="bottom: 30px; right: 30px; width: 65px; height: 65px; border-radius: 50%; background-color: #0d47a1; z-index: 9999; transition: transform 0.3s; cursor: pointer;">
+    <div id="vkit-chat-btn" class="position-fixed d-flex align-items-center justify-content-center shadow-lg"
+         style="bottom: 30px; right: 30px; width: 65px; height: 65px; border-radius: 50%; background-color: #0d47a1; z-index: 9999; cursor: pointer;">
         <i class="fas fa-comment-dots text-white fs-3"></i>
         <div class="position-absolute bg-white shadow-sm rounded p-2 text-center" style="right: 80px; width: 140px; font-size: 13px; font-weight: 600; border: 1px solid #e0e0e0;">
             <span class="text-primary">VKIT - Trợ lý ảo</span><br />
@@ -233,29 +243,35 @@
     </div>
 
     <div id="vkit-chat-window" class="position-fixed shadow-lg rounded-4 bg-white d-none flex-column"
-         style="bottom: 110px; right: 30px; width: 360px; height: 550px; z-index: 9999; border: 1px solid #e0e0e0; overflow: hidden;">
+         style="bottom: 110px; right: 30px; width: 400px; height: 620px; z-index: 9999; border: 1px solid #dee2e6; overflow: hidden; font-family: Arial, sans-serif;">
 
-        <div class="bg-primary text-white p-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #0d47a1, #1976d2) !important;">
+        <div class="text-white p-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #0d47a1, #1976d2);">
             <div class="d-flex align-items-center">
-                <div class="bg-white rounded-circle d-flex justify-content-center align-items-center text-primary fw-bold me-2" style="width: 35px; height: 35px;"><i class="fas fa-robot"></i></div>
-                <h6 class="m-0 fw-bold">VKIT Admission Bot</h6>
+                <div class="bg-white rounded-circle d-flex justify-content-center align-items-center text-primary fw-bold me-2 shadow-sm" style="width: 35px; height: 35px;"><i class="fas fa-robot"></i></div>
+                <div>
+                    <h6 class="m-0 fw-bold">VKIT Admission Bot</h6>
+                    <small style="font-size: 11px; opacity: 0.8;"><i class="fas fa-circle text-success" style="font-size: 9px;"></i> Trực tuyến tự động</small>
+                </div>
             </div>
-            <i class="fas fa-times cursor-pointer fs-5" id="close-chat" style="cursor: pointer;"></i>
+            <i class="fas fa-times fs-5" id="close-chat" style="cursor: pointer; opacity: 0.8;"></i>
         </div>
 
-        <div id="chat-history" class="p-3 flex-grow-1" style="overflow-y: auto; background-color: #f4f7f6;">
+        <div id="chat-history" class="p-3 flex-grow-1" style="overflow-y: auto; background-color: #f8f9fa; scroll-behavior: smooth;">
             <div class="d-flex justify-content-start mb-3">
-                <div class="bg-white p-3 rounded-3 shadow-sm" style="max-width: 85%; font-size: 14px; border: 1px solid #e9ecef;">
-                    Chào bạn! 👋 Chào mừng bạn đến với Viện Công Nghệ Việt - Hàn (VKIT). Dưới đây là các chủ đề thường được quan tâm nhất. Hãy chọn một câu hỏi nhé!
+                <div class="bg-white p-3 rounded-4 shadow-sm border" style="max-width: 85%; font-size: 14px; line-height: 1.5; border-radius: 0px 15px 15px 15px !important;">
+                    Xin chào! 👋 Mình là Trợ lý tuyển sinh tự động của Viện Công nghệ Việt - Hàn. Bạn cần mình hỗ trợ thông tin gì dưới đây ạ?
                 </div>
             </div>
 
-            <div id="chatbox-questions" class="d-flex flex-wrap gap-2 mb-3">
+            <div id="chatbox-options-area" class="d-flex flex-column gap-2 mb-3">
             </div>
         </div>
 
-        <div class="p-2 bg-light border-top text-center text-muted" style="font-size: 12px;">
-            Hệ thống tư vấn tự động <i class="fas fa-bolt text-warning"></i> VKIT
+        <div class="p-2 border-top bg-white">
+            <div class="input-group">
+                <input type="text" id="chat-user-input" class="form-control border-0 px-3" placeholder="Nhập câu hỏi hoặc từ khóa cần tra cứu..." style="box-shadow: none; font-size: 14px;" />
+                <button class="btn btn-primary rounded-3 px-3" id="btn-send-chat" type="button" style="background-color: #0d47a1;"><i class="fas fa-paper-plane"></i></button>
+            </div>
         </div>
     </div>
 
@@ -264,42 +280,32 @@
             const chatBtn = document.getElementById('vkit-chat-btn');
             const chatWindow = document.getElementById('vkit-chat-window');
             const closeBtn = document.getElementById('close-chat');
-            const questionsContainer = document.getElementById('chatbox-questions');
+            const optionsArea = document.getElementById('chatbox-options-area');
+            const chatInput = document.getElementById('chat-user-input');
+            const sendBtn = document.getElementById('btn-send-chat');
+
+            let localDbData = [];
             let dataLoaded = false;
 
-            // Bật / Tắt Chatbox
+            // Định nghĩa danh sách 9 ngành đào tạo cố định
+            const danhSachNganh = [
+                { id: 1, name: "Công nghệ thông tin" },
+                { id: 2, name: "Công nghệ kỹ thuật ô tô" },
+                { id: 3, name: "Quản trị kinh doanh" },
+                { id: 4, name: "Thiết kế đồ họa" },
+                { id: 5, name: "Ngôn ngữ Anh" },
+                { id: 6, name: "Ngôn ngữ Nhật" },
+                { id: 7, name: "Ngôn ngữ Hàn Quốc" },
+                { id: 8, name: "Logistics & Quản lý chuỗi cung ứng" },
+                { id: 9, name: "Công nghệ kỹ thuật điện, điện tử" }
+            ];
+
+            // Mở/đóng cửa sổ chat
             chatBtn.addEventListener('click', function () {
                 chatWindow.classList.toggle('d-none');
                 chatWindow.classList.toggle('d-flex');
-
-                // Lần đầu mở chatbox thì gọi API lấy câu hỏi từ CSDL
                 if (!chatWindow.classList.contains('d-none') && !dataLoaded) {
-                    fetch('/Home/GetChatboxData')
-                        .then(response => response.json())
-                        .then(data => {
-                            dataLoaded = true;
-                            if (data && data.length > 0) {
-                                data.forEach(item => {
-                                    // Tạo nút bấm cho mỗi câu hỏi
-                                    let btn = document.createElement('button');
-                                    btn.className = 'btn btn-outline-primary btn-sm rounded-pill text-start shadow-sm';
-                                    btn.style.fontSize = '13px';
-                                    btn.style.whiteSpace = 'normal';
-                                    btn.innerText = item.cauHoi;
-
-                                    // Khi User bấm vào câu hỏi
-                                    btn.onclick = function() {
-                                        appendMessage(item.cauHoi, 'user');
-                                        // Giả lập bot gõ chữ trong 0.5s cho chân thực
-                                        setTimeout(() => {
-                                            appendMessage(item.traLoi, 'bot');
-                                        }, 500);
-                                    };
-                                    questionsContainer.appendChild(btn);
-                                });
-                            }
-                        })
-                        .catch(err => console.log('Lỗi tải chatbox:', err));
+                    loadDatabaseQuestions();
                 }
             });
 
@@ -308,26 +314,180 @@
                 chatWindow.classList.remove('d-flex');
             });
 
-            // Hàm in tin nhắn lên màn hình
+            // Tải toàn bộ dữ liệu từ SQL về bộ nhớ tạm Client để xử lý tức thì
+            function loadDatabaseQuestions() {
+                fetch('/Home/GetChatboxData')
+                    .then(res => res.json())
+                    .then(data => {
+                        localDbData = data;
+                        dataLoaded = true;
+                        showInitialMenu();
+                    })
+                    .catch(err => {
+                        console.error("Lỗi kết nối dữ liệu Chatbox:", err);
+                        showInitialMenu();
+                    });
+            }
+
+            // BƯỚC 4.1: Hiển thị 2 lựa chọn mặc định ban đầu
+            function showInitialMenu() {
+                optionsArea.innerHTML = '';
+
+                // Lựa chọn 1: Câu hỏi chung
+                createOptionButton("✨ Các câu hỏi tuyển sinh chung", function() {
+                    appendMessage("Các câu hỏi tuyển sinh chung", "user");
+                    renderGeneralQuestions();
+                });
+
+                // Lựa chọn 2: Câu hỏi chuyên ngành
+                createOptionButton("🎓 Tìm hiểu câu hỏi chuyên ngành", function() {
+                    appendMessage("Tìm hiểu câu hỏi chuyên ngành", "user");
+                    renderMajorsList();
+                });
+            }
+
+            // BƯỚC 4.2: Hiển thị danh sách 9 ngành đào tạo
+            function renderMajorsList() {
+                optionsArea.innerHTML = '<div class="text-muted small mb-1 fw-bold"><i class="fas fa-graduation-cap"></i> Chọn 1 trong 9 ngành đào tạo dưới đây:</div>';
+
+                danhSachNganh.forEach(nganh => {
+                    createOptionButton("🔹 Ngành " + nganh.name, function() {
+                        appendMessage("Tìm hiểu ngành: " + nganh.name, "user");
+
+                        // Tìm kiếm câu trả lời giải thích về ngành trong SQL theo PhanLoai tương ứng
+                        const foundAnswer = localDbData.find(x => x.phanLoai === nganh.id);
+
+                        setTimeout(() => {
+                            if (foundAnswer) {
+                                appendMessage(foundAnswer.traLoi, "bot");
+                                showBackToMenuOption();
+                            } else {
+                                // Nếu nằm ngoài phạm vi thiết lập dữ liệu -> Xuất QR Facebook và Zalo cứu trợ
+                                appendMessage("Hiện tại dữ liệu chi tiết của ngành này đang được cập nhật hoặc nằm ngoài phạm vi giải đáp tự động. Bạn vui lòng liên hệ trực tiếp thầy/cô tư vấn qua kênh Fanpage hoặc Zalo dưới đây nhé:", "bot");
+                                appendQRCodeBox();
+                            }
+                        }, 400);
+                    });
+                });
+            }
+
+            // Hiển thị danh sách câu hỏi chung (PhanLoai == 0)
+            function renderGeneralQuestions() {
+                optionsArea.innerHTML = '<div class="text-muted small mb-1 fw-bold"><i class="fas fa-question-circle"></i> Các chủ đề phổ biến:</div>';
+                const generalItems = localDbData.filter(x => x.phanLoai === 0);
+
+                if (generalItems.length > 0) {
+                    generalItems.forEach(item => {
+                        createOptionButton("❓ " + item.cauHoi, function() {
+                            appendMessage(item.cauHoi, "user");
+                            setTimeout(() => {
+                                appendMessage(item.traLoi, "bot");
+                                showBackToMenuOption();
+                            }, 400);
+                        });
+                    });
+                } else {
+                    appendMessage("Hệ thống chưa cập nhật câu hỏi thường gặp. Bạn vui lòng sử dụng ô nhập tin nhắn ở dưới nhé!", "bot");
+                    showBackToMenuOption();
+                }
+            }
+
+            // BƯỚC 4.3: Xử lý tìm kiếm thông minh khi người dùng gõ nội dung vào ô nhắn tin
+            function handleUserTextInput() {
+                const query = chatInput.value.trim();
+                if (!query) return;
+
+                appendMessage(query, "user");
+                chatInput.value = ''; // Xóa sạch ô nhập sau khi gửi
+
+                setTimeout(() => {
+                    // Biến đổi chuỗi về dạng viết thường để so sánh chính xác từ khóa chứa trong câu hỏi SQL
+                    const lowerQuery = query.toLowerCase();
+                    let matchedItem = localDbData.find(x => x.cauHoi.toLowerCase().includes(lowerQuery));
+
+                    if (matchedItem) {
+                        appendMessage(matchedItem.traLoi, "bot");
+                        showBackToMenuOption();
+                    } else {
+                        // Không tìm thấy từ khóa trùng khớp -> Xuất QR liên hệ cứu trợ trực tiếp
+                        appendMessage("Hệ thống chưa tìm thấy dữ liệu phù hợp với cụm từ khóa của bạn. Bạn hãy quét mã QR dưới đây để kết nối trực tiếp với thầy cô Ban tư vấn tuyển sinh nhé:", "bot");
+                        appendQRCodeBox();
+                    }
+                }, 500);
+            }
+
+        // BƯỚC 4.4: Hàm sinh khối hiển thị QR Facebook và QR Zalo (ĐÃ NÂNG CẤP CLICK LINK)
+        function appendQRCodeBox() {
+            const history = document.getElementById('chat-history');
+            const qrDiv = document.createElement('div');
+            qrDiv.className = 'd-flex justify-content-start mb-3 animate__animated animate__fadeIn';
+
+            qrDiv.innerHTML = `
+                <div class="bg-white p-3 rounded-4 shadow-sm border w-100" style="max-width: 90%; border-radius: 0px 15px 15px 15px !important;">
+                    <div class="row text-center g-2">
+                        <div class="col-6 border-end">
+                            <a href="https://www.facebook.com/VKITHUTECH" target="_blank" class="text-decoration-none d-block qr-hover-effect">
+                                <img src="/images/hoatdong/qr_facebook.png" class="img-fluid rounded mb-2 border p-1" alt="QR Facebook" onerror="this.src='https://placehold.co/120x120?text=QR+Facebook'"/>
+                                <div class="small fw-bold text-primary"><i class="fab fa-facebook-messenger"></i> Facebook VKIT</div>
+                            </a>
+                        </div>
+
+                        <div class="col-6">
+                            <a href="https://zalo.me/170235255220670253%7C" target="_blank" class="text-decoration-none d-block qr-hover-effect">
+                                <img src="/images/hoatdong/qr_zalo.png" class="img-fluid rounded mb-2 border p-1" alt="QR Zalo" onerror="this.src='https://placehold.co/120x120?text=QR+Zalo'"/>
+                                <div class="small fw-bold text-success"><i class="fas fa-phone-alt"></i> Zalo Tư Vấn</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            history.insertBefore(qrDiv, optionsArea);
+            showBackToMenuOption();
+            history.scrollTo({ top: history.scrollHeight, behavior: 'smooth' });
+        }
+
+            // Helper: Hàm tạo nút bấm tùy chọn kịch bản
+            function createOptionButton(text, clickEvent) {
+                let btn = document.createElement('button');
+                btn.className = 'btn btn-outline-primary text-start shadow-sm py-2 px-3 fw-bold bg-white';
+                btn.style.fontSize = '13px';
+                btn.style.borderRadius = '12px';
+                btn.style.borderWidth = '1.5px';
+                btn.style.whiteSpace = 'normal';
+                btn.innerHTML = text;
+                btn.onclick = clickEvent;
+                optionsArea.appendChild(btn);
+            }
+
+            // Helper: Nút quay lại menu chính
+            function showBackToMenuOption() {
+                optionsArea.innerHTML = '';
+                createOptionButton("<i class='fas fa-home'></i> Quay lại Danh mục chính", function() {
+                    showInitialMenu();
+                });
+            }
+
+            // Helper: Đẩy bong bóng thoại lên màn hình chat
             function appendMessage(text, sender) {
                 const history = document.getElementById('chat-history');
                 const msgDiv = document.createElement('div');
                 msgDiv.className = sender === 'user' ? 'd-flex justify-content-end mb-3' : 'd-flex justify-content-start mb-3';
 
-                let bubbleHtml = '';
                 if (sender === 'user') {
-                    bubbleHtml = `<div class="bg-primary text-white p-2 px-3 rounded-4 rounded-bottom-0 shadow-sm" style="max-width: 85%; font-size: 14px;">${text}</div>`;
+                    msgDiv.innerHTML = `<div class="bg-primary text-white p-2 px-3 shadow-sm" style="max-width: 85%; font-size: 13.5px; border-radius: 15px 15px 0px 15px;">${text}</div>`;
                 } else {
-                    bubbleHtml = `<div class="bg-white text-dark p-3 rounded-4 shadow-sm" style="max-width: 85%; font-size: 14px; border: 1px solid #e9ecef;">${text}</div>`;
+                    msgDiv.innerHTML = `<div class="bg-white text-dark p-3 shadow-sm border" style="max-width: 85%; font-size: 13.5px; border-radius: 0px 15px 15px 15px; border: 1px solid #dee2e6; line-height: 1.6;">${text}</div>`;
                 }
 
-                msgDiv.innerHTML = bubbleHtml;
-                // Đẩy tin nhắn mới lên trước danh sách nút chọn câu hỏi
-                history.insertBefore(msgDiv, questionsContainer);
-
-                // Cuộn xuống cuối
-                history.scrollTop = history.scrollHeight;
+                history.insertBefore(msgDiv, optionsArea);
+                history.scrollTo({ top: history.scrollHeight, behavior: 'smooth' });
             }
+
+            // Bắt sự kiện gửi từ ô nhắn tin (Click chuột hoặc gõ nút Enter)
+            sendBtn.addEventListener('click', handleUserTextInput);
+            chatInput.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') handleUserTextInput();
+            });
         });
     </script>
 </body>
